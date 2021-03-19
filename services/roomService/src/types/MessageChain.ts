@@ -27,14 +27,34 @@ export default class MessageChain {
     get messages(): Message[] {
         return this._messages;
     }
+
     get isActive(): boolean {
         return this._isActive;
     }
+
     get directMessageId(): string | undefined {
         return this._directMessageId;
     }
+
     get participants(): string[] | undefined {
         return this._participants;
+    }
+
+    set isActive(value: boolean) {
+        this._isActive = value;
+    }
+
+    /**
+     * Adds new message to this message chain
+     * @param newMessage The new message to add to this chain
+     */
+    addMessage(newMessage: Message): void {
+        if (this._isActive == true) {
+            this._messages.push(newMessage);
+        }
+        else {
+            throw new Error(`Message could not be sent, this chat is inactive.`);
+        }
     }
 
 }
