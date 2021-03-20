@@ -6,6 +6,7 @@ import { Message, MessageType } from "../CoveyTypes";
 export default class MessageChain {
     private _messages: Message[] = [];
     private _isActive: boolean;
+    // only needed for MessageChains containing messages of the DirectMessage type
     private readonly _directMessageId: string | undefined;
     private readonly _participants: string[] | undefined;
     
@@ -40,21 +41,21 @@ export default class MessageChain {
         return this._participants;
     }
 
-    set isActive(value: boolean) {
+    updateIsActive(value: boolean) {
         this._isActive = value;
     }
 
     /**
-     * Adds new message to this message chain
+     * Adds new message to this message chain. Return true if message was added, 
+     * false if this chain is inactive.
      * @param newMessage The new message to add to this chain
      */
-    addMessage(newMessage: Message): void {
+    addMessage(newMessage: Message): boolean {
         if (this._isActive == true) {
             this._messages.push(newMessage);
+            return true;
         }
-        else {
-            throw new Error(`Message could not be sent, this chat is inactive.`);
-        }
+        return false;
     }
 
 }
