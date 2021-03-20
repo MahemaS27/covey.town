@@ -80,7 +80,7 @@ describe('MessageChain', () => {
             const testChain = createMessageChainForTesting(firstMessage);
             expect(testChain.messages.length).toBe(1);
             const secondMessage = createMessageForTesting(MessageType.ProximityMessage, player1);
-            expect(testChain.addMessage(secondMessage)).toBe(false);
+            expect(testChain.addMessage(secondMessage)).toBe(true);
             expect(testChain.messages.length).toBe(2);
             expect(secondMessage).toBe(testChain.messages[1]);
         });
