@@ -41,7 +41,7 @@ export default class MessageChain {
         return this._participants;
     }
 
-    updateIsActive(value: boolean) {
+    set isActive(value: boolean) {
         this._isActive = value;
     }
 

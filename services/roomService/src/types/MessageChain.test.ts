@@ -41,7 +41,7 @@ describe('MessageChain', () => {
         const firstMessage = createMessageForTesting(MessageType.ProximityMessage, new Player('player 1'));
         const testChain = createMessageChainForTesting(firstMessage);
         expect(testChain.isActive).toBe(true);
-        testChain.updateIsActive(false);
+        testChain.isActive = false;
         expect(testChain.isActive).toBe(false);
     });
     describe('get directMessageId', () => {
@@ -89,7 +89,7 @@ describe('MessageChain', () => {
             const firstMessage = createMessageForTesting(MessageType.ProximityMessage, player1);
             const testChain = createMessageChainForTesting(firstMessage);
             expect(testChain.messages.length).toBe(1);
-            testChain.updateIsActive(false);
+            testChain.isActive = false;
             const secondMessage = createMessageForTesting(MessageType.ProximityMessage, player1);
             expect(testChain.addMessage(secondMessage)).toBe(false);
             expect(testChain.messages.length).toBe(1);
