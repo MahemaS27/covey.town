@@ -33,11 +33,16 @@ export default class MessageChain {
   // how many messages have not been viewed by the curret users;
   private _numberUnviewed: number;
 
-  constructor(directMessageId?: string | undefined, participants?: string[] | undefined) {
-    this._directMessageId = directMessageId;
-    this._participants = participants;
+  constructor(message?: Message) {
     this._isActive = true;
-    this._numberUnviewed = 0;
+    if (message && message.directMessageId) {
+      this._directMessageId = message.directMessageId;
+      this._participants = message.directMessageId?.split(':');
+      this._messages.push(message);
+      this._numberUnviewed = 1;
+    } else {
+      this._numberUnviewed = 0;
+    }
   }
 
   get messages(): Message[] {
@@ -69,8 +74,11 @@ export default class MessageChain {
    * @param newMessage The new message to add to this chain
    */
   addMessage(newMessage: Message): MessageChain {
-    this._messages.push(newMessage);
-    this._numberUnviewed += 1;
+    if (this._isActive) {
+      this._messages.push(newMessage);
+      this._numberUnviewed += 1;
+    }
+
     return this;
   }
 
