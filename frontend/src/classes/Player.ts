@@ -4,18 +4,6 @@ import MessageChain, {
   ServerMessageChainHash,
 } from './MessageChain';
 
-function fromServerMessageChainHash(
-  messageChainHashFromServer: ServerMessageChainHash,
-): MessageChainHash {
-  const translatedMessageChainHash: MessageChainHash = {};
-  Object.keys(messageChainHashFromServer).forEach(directMessageId => {
-    translatedMessageChainHash[directMessageId] = MessageChain.fromServerMessageChain(
-      messageChainHashFromServer[directMessageId],
-    );
-  });
-  return translatedMessageChainHash;
-}
-
 export default class Player {
   public location?: UserLocation;
 
@@ -33,18 +21,11 @@ export default class Player {
 
   public label?: Phaser.GameObjects.Text;
 
-  constructor(
-    id: string,
-    userName: string,
-    location: UserLocation,
-    townMessageChain?: ServerMessageChain,
-  ) {
+  constructor(id: string, userName: string, location: UserLocation) {
     this._id = id;
     this._userName = userName;
     this.location = location;
-    this._townMessageChain = townMessageChain
-      ? MessageChain.fromServerMessageChain(townMessageChain)
-      : new MessageChain();
+    this._townMessageChain = new MessageChain();
     this._proximityMessageChain = new MessageChain();
     this._directMessageChains = {};
   }
@@ -70,12 +51,7 @@ export default class Player {
   }
 
   static fromServerPlayer(playerFromServer: ServerPlayer): Player {
-    return new Player(
-      playerFromServer._id,
-      playerFromServer._userName,
-      playerFromServer.location,
-      playerFromServer._townMessageChain,
-    );
+    return new Player(playerFromServer._id, playerFromServer._userName, playerFromServer.location);
   }
 }
 export type ServerPlayer = {
