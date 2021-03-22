@@ -6,15 +6,6 @@ export enum MessageType {
   TownMessage,
 }
 
-export type SenderDirection = 'front' | 'back' | 'left' | 'right';
-
-export type SenderUserLocation = {
-  x: number;
-  y: number;
-  rotation: SenderDirection;
-  moving: boolean;
-};
-
 export type Message = {
   userId: string;
   userName: string;
@@ -25,6 +16,10 @@ export type Message = {
   // null for cases of Proximity and Town Message
   directMessageId: string | undefined;
 };
+
+export interface MessageChainHash {
+  [directMessageId: string]: MessageChain;
+}
 
 export default class MessageChain {
   private _messages: Message[] = [];
