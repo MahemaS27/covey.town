@@ -1,5 +1,3 @@
-import { ServerMessageChain, ServerMessageChainHash } from './MessageChain';
-
 export default class Player {
   public location?: UserLocation;
 
@@ -30,15 +28,10 @@ export default class Player {
   }
 }
 
-// message chains may be returned from the server, but we don't actually store
-// them as part of the player
 export type ServerPlayer = {
   _id: string;
   _userName: string;
   location: UserLocation;
-  _townMessageChain: ServerMessageChain;
-  _proximityMessageChain: ServerMessageChain;
-  _directMessageChains: ServerMessageChainHash;
 };
 
 export type Direction = 'front' | 'back' | 'left' | 'right';

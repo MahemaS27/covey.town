@@ -88,18 +88,3 @@ export default class MessageChain {
     this._numberUnviewed = 0;
   }
 }
-
-export type ServerMessageChain = {
-  _messages: Message[];
-  _isActive: boolean;
-  _directMessageId: string | undefined;
-  _participants: string[] | undefined;
-};
-
-export interface ServerMessageChainHash {
-  [directMessageId: string]: ServerMessageChain;
-}
-
-export interface MessageChainHash {
-  [directMessageId: string]: MessageChain;
-}
