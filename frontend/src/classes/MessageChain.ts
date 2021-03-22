@@ -1,5 +1,3 @@
-import { UserLocation } from './Player';
-
 export enum MessageType {
   DirectMessage,
   ProximityMessage,
@@ -7,9 +5,18 @@ export enum MessageType {
 }
 
 export type PlayerData = {
-  location: UserLocation;
+  location: SenderUserLocation;
   userName: string;
   id: string;
+};
+
+export type SenderDirection = 'front' | 'back' | 'left' | 'right';
+
+export type SenderUserLocation = {
+  x: number;
+  y: number;
+  rotation: SenderDirection;
+  moving: boolean;
 };
 
 export type Message = {
@@ -24,10 +31,14 @@ export type Message = {
 
 export default class MessageChain {
   private _messages: Message[] = [];
+
   private _isActive: boolean;
+
   private readonly _directMessageId: string | undefined;
+
   private readonly _participants: string[] | undefined;
-  private _numberUnviewed: number = 0;
+
+  private _numberUnviewed: number;
 
   constructor(
     messages?: Message[],
@@ -38,6 +49,7 @@ export default class MessageChain {
     if (!messages) {
       // just create if there's no messages already;
       this._isActive = true;
+      this._numberUnviewed = 0;
       return;
     }
     this._messages = messages;
@@ -45,6 +57,7 @@ export default class MessageChain {
     this._isActive = isActive || true;
     this._directMessageId = directMessageId;
     this._participants = participants;
+    this._numberUnviewed = 0;
   }
 
   get messages(): Message[] {
@@ -55,6 +68,10 @@ export default class MessageChain {
     return this._isActive;
   }
 
+  set isActive(value: boolean) {
+    this._isActive = value;
+  }
+
   get directMessageId(): string | undefined {
     return this._directMessageId;
   }
@@ -63,17 +80,13 @@ export default class MessageChain {
     return this._participants;
   }
 
-  set isActive(value: boolean) {
-    this._isActive = value;
-  }
-
   /**
    * Adds new message to this message chain.
    * @param newMessage The new message to add to this chain
    */
   addMessage(newMessage: Message): MessageChain {
     this._messages.push(newMessage);
-    this._numberUnviewed = this._numberUnviewed + 1;
+    this._numberUnviewed += 1;
     return this;
   }
 

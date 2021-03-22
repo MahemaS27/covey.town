@@ -7,12 +7,12 @@ import MessageChain, {
 function fromServerMessageChainHash(
   messageChainHashFromServer: ServerMessageChainHash,
 ): MessageChainHash {
-  let translatedMessageChainHash: MessageChainHash = {};
-  for (let directMessageId in messageChainHashFromServer) {
+  const translatedMessageChainHash: MessageChainHash = {};
+  Object.keys(messageChainHashFromServer).forEach(directMessageId => {
     translatedMessageChainHash[directMessageId] = MessageChain.fromServerMessageChain(
       messageChainHashFromServer[directMessageId],
     );
-  }
+  });
   return translatedMessageChainHash;
 }
 
@@ -24,7 +24,9 @@ export default class Player {
   private readonly _userName: string;
 
   private _townMessageChain: MessageChain;
+
   private _proximityMessageChain: MessageChain;
+
   private _directMessageChains: MessageChainHash;
 
   public sprite?: Phaser.GameObjects.Sprite;
@@ -35,16 +37,22 @@ export default class Player {
     id: string,
     userName: string,
     location: UserLocation,
-    townMessageChain: ServerMessageChain,
-    proximityMessageChain: ServerMessageChain,
-    directMessageChains: ServerMessageChainHash,
+    townMessageChain?: ServerMessageChain,
+    proximityMessageChain?: ServerMessageChain,
+    directMessageChains?: ServerMessageChainHash,
   ) {
     this._id = id;
     this._userName = userName;
     this.location = location;
-    this._townMessageChain = MessageChain.fromServerMessageChain(townMessageChain);
-    this._proximityMessageChain = MessageChain.fromServerMessageChain(proximityMessageChain);
-    this._directMessageChains = fromServerMessageChainHash(directMessageChains);
+    this._townMessageChain = townMessageChain
+      ? MessageChain.fromServerMessageChain(townMessageChain)
+      : new MessageChain();
+    this._proximityMessageChain = proximityMessageChain
+      ? MessageChain.fromServerMessageChain(proximityMessageChain)
+      : new MessageChain();
+    this._directMessageChains = directMessageChains
+      ? fromServerMessageChainHash(directMessageChains)
+      : {};
   }
 
   get userName(): string {
