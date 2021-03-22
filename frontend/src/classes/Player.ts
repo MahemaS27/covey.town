@@ -1,8 +1,4 @@
-import MessageChain, {
-  MessageChainHash,
-  ServerMessageChain,
-  ServerMessageChainHash,
-} from './MessageChain';
+import { ServerMessageChain, ServerMessageChainHash } from './MessageChain';
 
 export default class Player {
   public location?: UserLocation;
@@ -10,12 +6,6 @@ export default class Player {
   private readonly _id: string;
 
   private readonly _userName: string;
-
-  private _townMessageChain: MessageChain;
-
-  private _proximityMessageChain: MessageChain;
-
-  private _directMessageChains: MessageChainHash;
 
   public sprite?: Phaser.GameObjects.Sprite;
 
@@ -25,9 +15,6 @@ export default class Player {
     this._id = id;
     this._userName = userName;
     this.location = location;
-    this._townMessageChain = new MessageChain();
-    this._proximityMessageChain = new MessageChain();
-    this._directMessageChains = {};
   }
 
   get userName(): string {
@@ -38,22 +25,13 @@ export default class Player {
     return this._id;
   }
 
-  get townMessageChain(): MessageChain {
-    return this._townMessageChain;
-  }
-
-  get proximityMessageChain(): MessageChain {
-    return this._proximityMessageChain;
-  }
-
-  get directMessageChains(): MessageChainHash {
-    return this._directMessageChains;
-  }
-
   static fromServerPlayer(playerFromServer: ServerPlayer): Player {
     return new Player(playerFromServer._id, playerFromServer._userName, playerFromServer.location);
   }
 }
+
+// message chains may be returned from the server, but we don't actually store
+// them as part of the player
 export type ServerPlayer = {
   _id: string;
   _userName: string;

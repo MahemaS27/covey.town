@@ -4,12 +4,6 @@ export enum MessageType {
   TownMessage,
 }
 
-export type PlayerData = {
-  location: SenderUserLocation;
-  userName: string;
-  id: string;
-};
-
 export type SenderDirection = 'front' | 'back' | 'left' | 'right';
 
 export type SenderUserLocation = {
@@ -17,6 +11,12 @@ export type SenderUserLocation = {
   y: number;
   rotation: SenderDirection;
   moving: boolean;
+};
+
+export type PlayerData = {
+  location: SenderUserLocation;
+  userName: string;
+  id: string;
 };
 
 export type Message = {
