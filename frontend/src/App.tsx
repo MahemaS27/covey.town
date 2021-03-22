@@ -13,6 +13,7 @@ import React, {
 import { BrowserRouter } from 'react-router-dom';
 import { io, Socket } from 'socket.io-client';
 import './App.css';
+import MessageChain, { Message, MessageType } from './classes/MessageChain';
 import Player, { ServerPlayer, UserLocation } from './classes/Player';
 import TownsServiceClient, { TownJoinResponse } from './classes/TownsServiceClient';
 import Video from './classes/Video/Video';
@@ -51,7 +52,8 @@ type CoveyAppUpdate =
   | { action: 'playerMoved'; player: Player }
   | { action: 'playerDisconnect'; player: Player }
   | { action: 'weMoved'; location: UserLocation }
-  | { action: 'disconnect' };
+  | { action: 'disconnect' }
+  | { action: 'messageReceived'; message: Message };
 
 function defaultAppState(): CoveyAppState {
   return {
@@ -72,6 +74,9 @@ function defaultAppState(): CoveyAppState {
     },
     emitMovement: () => {},
     apiClient: new TownsServiceClient(),
+    townMessageChain: new MessageChain(),
+    proximityMessageChain: new MessageChain(),
+    directMessageChains: {},
   };
 }
 function appStateReducer(state: CoveyAppState, update: CoveyAppUpdate): CoveyAppState {
@@ -88,6 +93,9 @@ function appStateReducer(state: CoveyAppState, update: CoveyAppUpdate): CoveyApp
     socket: state.socket,
     emitMovement: state.emitMovement,
     apiClient: state.apiClient,
+    townMessageChain: state.townMessageChain,
+    proximityMessageChain: state.proximityMessageChain,
+    directMessageChains: state.directMessageChains,
   };
 
   function calculateNearbyPlayers(players: Player[], currentLocation: UserLocation) {
@@ -122,6 +130,12 @@ function appStateReducer(state: CoveyAppState, update: CoveyAppUpdate): CoveyApp
       nextState.emitMovement = update.data.emitMovement;
       nextState.socket = update.data.socket;
       nextState.players = update.data.players;
+      const myPlayer = update.data.players.find(player => player.id === update.data.myPlayerID);
+      if (myPlayer) {
+        nextState.townMessageChain = myPlayer.townMessageChain;
+        nextState.proximityMessageChain = myPlayer.proximityMessageChain;
+        nextState.directMessageChains = myPlayer.directMessageChains;
+      }
       break;
     case 'addPlayer':
       nextState.players = nextState.players.concat([update.player]);
@@ -166,6 +180,27 @@ function appStateReducer(state: CoveyAppState, update: CoveyAppUpdate): CoveyApp
     case 'disconnect':
       state.socket?.disconnect();
       return defaultAppState();
+    case 'messageReceived':
+      switch (update.message.type) {
+        case MessageType.TownMessage:
+          nextState.townMessageChain = nextState.townMessageChain.addMessage(update.message);
+          break;
+        case MessageType.ProximityMessage:
+          nextState.proximityMessageChain = nextState.proximityMessageChain.addMessage(
+            update.message,
+          );
+          break;
+        default:
+          if (update.message.directMessageId) {
+            const directMessageChainToUpdate =
+              nextState.directMessageChains[update.message.directMessageId];
+            nextState.directMessageChains[
+              update.message.directMessageId
+            ] = directMessageChainToUpdate.addMessage(update.message);
+          }
+          break;
+      }
+      break;
     default:
       throw new Error('Unexpected state request');
   }
@@ -204,6 +239,9 @@ async function GameController(
   });
   socket.on('disconnect', () => {
     dispatchAppUpdate({ action: 'disconnect' });
+  });
+  socket.on('messageReceived', (message: Message) => {
+    dispatchAppUpdate({ action: 'messageReceived', message });
   });
   const emitMovement = (location: UserLocation) => {
     socket.emit('playerMovement', location);
@@ -257,7 +295,7 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
     }
     return (
       <div>
-        <div className="world-and-overlay-container">
+        <div className='world-and-overlay-container'>
           <WorldMap />
           <VideoOverlay preferredMode='fullwidth' />
         </div>
