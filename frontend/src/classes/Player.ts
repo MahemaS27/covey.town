@@ -38,8 +38,6 @@ export default class Player {
     userName: string,
     location: UserLocation,
     townMessageChain?: ServerMessageChain,
-    proximityMessageChain?: ServerMessageChain,
-    directMessageChains?: ServerMessageChainHash,
   ) {
     this._id = id;
     this._userName = userName;
@@ -47,12 +45,8 @@ export default class Player {
     this._townMessageChain = townMessageChain
       ? MessageChain.fromServerMessageChain(townMessageChain)
       : new MessageChain();
-    this._proximityMessageChain = proximityMessageChain
-      ? MessageChain.fromServerMessageChain(proximityMessageChain)
-      : new MessageChain();
-    this._directMessageChains = directMessageChains
-      ? fromServerMessageChainHash(directMessageChains)
-      : {};
+    this._proximityMessageChain = new MessageChain();
+    this._directMessageChains = {};
   }
 
   get userName(): string {
@@ -81,8 +75,6 @@ export default class Player {
       playerFromServer._userName,
       playerFromServer.location,
       playerFromServer._townMessageChain,
-      playerFromServer._proximityMessageChain,
-      playerFromServer._directMessageChains,
     );
   }
 }

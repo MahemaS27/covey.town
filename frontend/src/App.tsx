@@ -130,6 +130,12 @@ function appStateReducer(state: CoveyAppState, update: CoveyAppUpdate): CoveyApp
       nextState.emitMovement = update.data.emitMovement;
       nextState.socket = update.data.socket;
       nextState.players = update.data.players;
+      updatePlayer = update.data.players.find(
+        playerToCheck => playerToCheck.id === update.data.myPlayerID,
+      );
+      if (updatePlayer) {
+        nextState.townMessageChain = updatePlayer.townMessageChain
+      }
       break;
     case 'addPlayer':
       nextState.players = nextState.players.concat([update.player]);
