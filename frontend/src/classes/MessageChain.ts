@@ -1,3 +1,5 @@
+import { UserLocation } from './Player';
+
 export enum MessageType {
   DirectMessage,
   ProximityMessage,
@@ -13,15 +15,10 @@ export type SenderUserLocation = {
   moving: boolean;
 };
 
-export type PlayerData = {
-  location: SenderUserLocation;
-  userName: string;
-  id: string;
-};
-
 export type Message = {
-  // user who sent the message
-  user: PlayerData;
+  userId: string;
+  userName: string;
+  location: UserLocation;
   messageContent: string;
   timestamp: string;
   type: MessageType;
@@ -38,6 +35,7 @@ export default class MessageChain {
 
   private readonly _participants: string[] | undefined;
 
+  // how many messages have not been viewed by the curret users;
   private _numberUnviewed: number;
 
   constructor(directMessageId?: string | undefined, participants?: string[] | undefined) {
