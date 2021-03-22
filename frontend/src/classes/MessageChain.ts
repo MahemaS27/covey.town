@@ -40,23 +40,10 @@ export default class MessageChain {
 
   private _numberUnviewed: number;
 
-  constructor(
-    messages?: Message[],
-    isActive?: boolean | undefined,
-    directMessageId?: string | undefined,
-    participants?: string[] | undefined,
-  ) {
-    if (!messages) {
-      // just create if there's no messages already;
-      this._isActive = true;
-      this._numberUnviewed = 0;
-      return;
-    }
-    this._messages = messages;
-    this._numberUnviewed = messages.length;
-    this._isActive = isActive || true;
+  constructor(directMessageId?: string | undefined, participants?: string[] | undefined) {
     this._directMessageId = directMessageId;
     this._participants = participants;
+    this._isActive = true;
     this._numberUnviewed = 0;
   }
 
@@ -80,6 +67,10 @@ export default class MessageChain {
     return this._participants;
   }
 
+  get numberUnviewed(): number {
+    return this._numberUnviewed;
+  }
+
   /**
    * Adds new message to this message chain.
    * @param newMessage The new message to add to this chain
@@ -93,17 +84,8 @@ export default class MessageChain {
   /**
    * sets number of unviewed messages to zero
    */
-  resetNumberUnviewed() {
+  resetNumberUnviewed(): void {
     this._numberUnviewed = 0;
-  }
-
-  static fromServerMessageChain(messageChainFromServer: ServerMessageChain): MessageChain {
-    return new MessageChain(
-      messageChainFromServer._messages,
-      messageChainFromServer._isActive,
-      messageChainFromServer._directMessageId,
-      messageChainFromServer._participants,
-    );
   }
 }
 

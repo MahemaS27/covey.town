@@ -53,7 +53,8 @@ type CoveyAppUpdate =
   | { action: 'playerDisconnect'; player: Player }
   | { action: 'weMoved'; location: UserLocation }
   | { action: 'disconnect' }
-  | { action: 'messageReceived'; message: Message };
+  | { action: 'messageReceived'; message: Message }
+  | { action: 'messageChainInactive'; directMessageId: string };
 
 function defaultAppState(): CoveyAppState {
   return {
@@ -119,6 +120,7 @@ function appStateReducer(state: CoveyAppState, update: CoveyAppUpdate): CoveyApp
   }
 
   let updatePlayer;
+  let messageChainToUpdate;
   switch (update.action) {
     case 'doConnect':
       nextState.sessionToken = update.data.sessionToken;
@@ -186,13 +188,20 @@ function appStateReducer(state: CoveyAppState, update: CoveyAppUpdate): CoveyApp
           break;
         default:
           if (update.message.directMessageId) {
-            const directMessageChainToUpdate =
+            let directMessageChainToUpdate =
               nextState.directMessageChains[update.message.directMessageId];
+            directMessageChainToUpdate = directMessageChainToUpdate || new MessageChain();
             nextState.directMessageChains[
               update.message.directMessageId
             ] = directMessageChainToUpdate.addMessage(update.message);
           }
           break;
+      }
+      break;
+    case 'messageChainInactive':
+      messageChainToUpdate = nextState.directMessageChains[update.directMessageId];
+      if (messageChainToUpdate) {
+        messageChainToUpdate.isActive = false;
       }
       break;
     default:
@@ -236,6 +245,9 @@ async function GameController(
   });
   socket.on('messageReceived', (message: Message) => {
     dispatchAppUpdate({ action: 'messageReceived', message });
+  });
+  socket.on('messageChainInactive', (directMessageId: string) => {
+    dispatchAppUpdate({ action: 'messageChainInactive', directMessageId });
   });
   const emitMovement = (location: UserLocation) => {
     socket.emit('playerMovement', location);
