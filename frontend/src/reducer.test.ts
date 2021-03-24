@@ -105,6 +105,43 @@ describe('reducer', () => {
       });
       expect(secondState.directMessageChains[directMessageId].messages.length).toBe(2);
     });
+
+    it('adds message to correct chain for direct message', () => {
+      const messageToTest = createMessageForTesting(
+        MessageType.DirectMessage,
+        player1Id,
+        player2Id,
+      );
+      const messageInSecondChain = createMessageForTesting(
+        MessageType.DirectMessage,
+        player1Id,
+        '789',
+      );
+      const messageInFirstChain = createMessageForTesting(
+        MessageType.DirectMessage,
+        player1Id,
+        player2Id,
+      );
+      
+      const firstState = appStateReducer(createSampleAppState(), {
+        action: 'messageReceived',
+        message: messageToTest,
+      });
+      expect(firstState.directMessageChains[directMessageId].messages.length).toBe(1);
+
+      const secondState = appStateReducer(firstState, {
+        action: 'messageReceived',
+        message: messageInSecondChain,
+      });
+      expect(secondState.directMessageChains['123:789'].messages.length).toBe(1);
+
+      const thirdState = appStateReducer(secondState, {
+        action: 'messageReceived',
+        message: messageInFirstChain,
+      });
+      expect(thirdState.directMessageChains['123:789'].messages.length).toBe(1);
+      expect(thirdState.directMessageChains[directMessageId].messages.length).toBe(2);
+    });
   });
   describe('playerDisconnected', () => {
     it('sets direct messages with that player to inactive', () => {
