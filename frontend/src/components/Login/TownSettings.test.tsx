@@ -8,6 +8,7 @@ import { TargetElement } from '@testing-library/user-event';
 import TownSettings from './TownSettings';
 import TownsServiceClient from '../../classes/TownsServiceClient';
 import CoveyAppContext from '../../contexts/CoveyAppContext';
+import MessageChain from '../../classes/MessageChain';
 
 const mockUseCoveyAppState = jest.fn(() => (Promise.resolve()));
 const mockToast = jest.fn();
@@ -53,6 +54,9 @@ function wrappedTownSettings() {
     emitMovement: () => {
     },
     apiClient: new TownsServiceClient(),
+    townMessageChain: new MessageChain(),
+    proximityMessageChain: new MessageChain(),
+    directMessageChains: {},
   }}>
     <TownSettings/></CoveyAppContext.Provider></ChakraProvider>;
 }
