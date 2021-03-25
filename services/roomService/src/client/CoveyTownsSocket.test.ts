@@ -7,7 +7,7 @@ import { promisify } from 'util';
 import io from 'socket.io';
 import * as TestUtils from './TestUtils';
 
-import { UserLocation } from '../CoveyTypes';
+import { MessageType, UserLocation } from '../CoveyTypes';
 import TownsServiceClient from './TownsServiceClient';
 import addTownRoutes from '../router/towns';
 
@@ -108,6 +108,7 @@ describe('TownServiceApiSocket', () => {
     expect((await newPlayerPromise2)._userName).toBe(newJoinerName);
 
   });
+  
   it('Informs all players when a player disconnects', async () => {
     const town = await createTownForTesting();
     const joinData = await apiClient.joinTown({coveyTownID: town.coveyTownID, userName: nanoid()});
