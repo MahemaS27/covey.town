@@ -2,6 +2,7 @@ import { nanoid } from 'nanoid';
 import { createMessageChainForTesting, createMessageForTesting } from '../TestUtils';
 import { MessageType } from './MessageChain';
 
+// tests for new message chain class
 describe('MessageChain', () => {
   it('get messages', () => {
     const firstMessage = createMessageForTesting(MessageType.ProximityMessage, 'player1');
