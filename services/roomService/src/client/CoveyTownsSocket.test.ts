@@ -108,6 +108,25 @@ describe('TownServiceApiSocket', () => {
     expect((await newPlayerPromise2)._userName).toBe(newJoinerName);
 
   });
+
+  // it('Informs all clients when a new message is sent', async () => {
+  //   const town = await createTownForTesting();
+  //   const joinData = await apiClient.joinTown({coveyTownID: town.coveyTownID, userName: nanoid()});
+  //   const joinData2 = await apiClient.joinTown({coveyTownID: town.coveyTownID, userName: nanoid()});
+  //   const {socketConnected, newPlayerJoined} = TestUtils.createSocketClient(server, joinData.coveySessionToken, town.coveyTownID);
+  //   const {
+  //     socketConnected: connectPromise2,
+  //     newPlayerJoined: newPlayerPromise2,
+  //   } = TestUtils.createSocketClient(server, joinData2.coveySessionToken, town.coveyTownID);
+  //   await Promise.all([socketConnected, connectPromise2]);
+  //   const newJoinerName = nanoid();
+
+  //   await apiClient.joinTown({coveyTownID: town.coveyTownID, userName: newJoinerName});
+  //   expect((await newPlayerJoined)._userName).toBe(newJoinerName);
+  //   expect((await newPlayerPromise2)._userName).toBe(newJoinerName);
+
+  // });
+  
   it('Informs all players when a player disconnects', async () => {
     const town = await createTownForTesting();
     const joinData = await apiClient.joinTown({coveyTownID: town.coveyTownID, userName: nanoid()});

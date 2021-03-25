@@ -4,7 +4,8 @@ import {Socket as ServerSocket} from 'socket.io';
 
 import {AddressInfo} from 'net';
 import http from 'http';
-import { UserLocation } from '../CoveyTypes';
+import { Message, MessageType, UserLocation } from '../CoveyTypes';
+import { nanoid } from 'nanoid';
 
 export type RemoteServerPlayer = {
   location: UserLocation, _userName: string, _id: string
@@ -45,6 +46,7 @@ export function createSocketClient(server: http.Server, sessionToken: string, co
   playerMoved: Promise<RemoteServerPlayer>,
   newPlayerJoined: Promise<RemoteServerPlayer>,
   playerDisconnected: Promise<RemoteServerPlayer>,
+  messageReceived: Promise<Message>,
 } {
   const address = server.address() as AddressInfo;
   const socket = io(`http://localhost:${address.port}`, {
@@ -66,6 +68,11 @@ export function createSocketClient(server: http.Server, sessionToken: string, co
       resolve(player);
     });
   });
+  const messageReceivedPromise = new Promise<Message>((resolve) => {
+    socket.on('messageReceived', (message: Message) => {
+      resolve(message);
+    });
+  });
   const newPlayerPromise = new Promise<RemoteServerPlayer>((resolve) => {
     socket.on('newPlayer', (player: RemoteServerPlayer) => {
       resolve(player);
@@ -84,10 +91,32 @@ export function createSocketClient(server: http.Server, sessionToken: string, co
     playerMoved: playerMovedPromise,
     newPlayerJoined: newPlayerPromise,
     playerDisconnected: playerDisconnectPromise,
+    messageReceived: messageReceivedPromise,
   };
 }
 export function setSessionTokenAndTownID(coveyTownID: string, sessionToken: string, socket: ServerSocket):void {
   // eslint-disable-next-line
   socket.handshake.auth = {token: sessionToken, coveyTownID};
+}
+
+export function createMessageForTesting(
+  type: MessageType,
+  player1Id: string,
+  player2Id?: string,
+): Message {
+  const timestamp = Date.now().toString();
+  let directMessageID;
+  if (player2Id) {
+    directMessageID = `${player1Id}:${player2Id}`;
+  }
+  return {
+    userName: nanoid(),
+    userId: player1Id,
+    location: { x: 1, y: 2, rotation: 'front', moving: false },
+    messageContent: "Omg I'm a test",
+    timestamp,
+    type,
+    directMessageId: directMessageID,
+  };
 }
 
