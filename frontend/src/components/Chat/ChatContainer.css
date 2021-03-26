@@ -1,15 +1,15 @@
-/* 116 = 50 + 66. 50px is the height of the chat input,
+/* 166 = 100 + 66. 50px is the height of the chat input,
 66px is the height of the chat container header, we will likely
 need to increase this value for the height of tabs when added */
 
 .scrollable-messages {
-  max-height: calc(100vh - 116px);
+  max-height: calc(100vh - 166px);
   overflow-y: auto;
   padding-bottom: 20px;
 }
 
 .chat-input {
-  height: 50px;
+  height: 100px;
   width: 100%;
   border-top: 1px solid #ddd;
 }
