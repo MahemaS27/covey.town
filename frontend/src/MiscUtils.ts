@@ -1,6 +1,5 @@
 export default function formatTimestamp(timestamp: number): string {
-  const utcDate = new Date(timestamp).toUTCString();
-  const date = new Date(utcDate);
+  const date = new Date(timestamp);
 
   const year = date.getUTCFullYear();
   const month = date.getUTCMonth() + 1;
