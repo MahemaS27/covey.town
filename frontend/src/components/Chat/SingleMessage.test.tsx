@@ -6,7 +6,7 @@ import SingleMessage from './SingleMessage';
 const sampleMessage: Message = {
   userName: 'sampleName',
   userId: '123',
-  timestamp: Date.parse('04 Dec 2020 22:12:00 EST'),
+  timestamp: 1616811720000,
   messageContent:
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
   type: MessageType.TownMessage,
@@ -24,7 +24,7 @@ describe('SingleMessage', () => {
     const renderData = render(<SingleMessage message={sampleMessage} myPlayerID='123' />);
     renderData.getByTestId('sent-from-us');
     renderData.getByText(sampleMessage.userName);
-    renderData.getByText('12/4/2020 10:12 PM');
+    renderData.getByText('3/26/2021 10:22 PM');
     renderData.getByTestId('first-spacer');
     renderData.getByText(sampleMessage.messageContent);
     expect(renderData.queryByTestId(/second-spacer/i)).toBeNull();
@@ -35,7 +35,7 @@ describe('SingleMessage', () => {
     const renderData = render(<SingleMessage message={sampleMessage} myPlayerID='321' />);
     renderData.getByTestId('sent-from-them');
     renderData.getByText(sampleMessage.userName);
-    renderData.getByText('12/4/2020 10:12 PM');
+    renderData.getByText('3/26/2021 10:22 PM');
     renderData.getByTestId('second-spacer');
     renderData.getByText(sampleMessage.messageContent);
     expect(renderData.queryByTestId(/first-spacer/i)).toBeNull();
