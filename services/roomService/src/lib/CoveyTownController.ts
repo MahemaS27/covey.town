@@ -132,6 +132,10 @@ export default class CoveyTownController {
       case MessageType.TownMessage:
         this._listeners.forEach((listener) => listener.onMessageReceived(message));
         break;
+      case MessageType.ProximityMessage:
+        const nearbyListeners = this.calculateNearbyListeners(this._players, message.location);
+        nearbyListeners.forEach((listener) => listener.onMessageReceived(message));
+        break;
       default:
         break;
     }
@@ -171,5 +175,19 @@ export default class CoveyTownController {
 
   disconnectAllPlayers(): void {
     this._listeners.forEach((listener) => listener.onTownDestroyed());
+  }
+
+  calculateNearbyListeners(players: Player[], currentLocation: UserLocation): CoveyTownListener[] {
+    const isWithinCallRadius = (p: Player, location: UserLocation) => {
+      if (p.location && location) {
+        const dx = p.location.x - location.x;
+        const dy = p.location.y - location.y;
+        const d = Math.sqrt(dx * dx + dy * dy);
+        return d < 80;
+      }
+      return false;
+    };
+    const nearbyPlayers =  players.filter(p => isWithinCallRadius(p, currentLocation));
+    return this._listeners.filter((listener) => nearbyPlayers.includes(listener.getAssociatedPlayer()));
   }
 }
