@@ -1,0 +1,36 @@
+.message-container {
+  display: flex;
+  font-size: 0.8em;
+  padding: 20px 20px 0px 20px;
+}
+
+.message-container .spacer {
+  width: 250px;
+}
+
+.message-container.sent-from-us .message-content {
+  background-color: lightblue;
+}
+
+.message-container.sent-from-them .message-content {
+  background-color: lightgray;
+}
+
+.message-container .message-content {
+  padding: 15px;
+  border-radius: 15px;
+}
+
+.message-container .message-content .message-details {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.message-container .message-content .message-details .message-username {
+  font-weight: bold;
+}
+
+.message-container .message-content .message-details .message-timestamp {
+  font-size: 0.7em;
+}

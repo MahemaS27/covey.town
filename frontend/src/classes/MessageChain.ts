@@ -9,9 +9,9 @@ export enum MessageType {
 export type Message = {
   userId: string;
   userName: string;
-  location: UserLocation;
+  location: UserLocation; 
   messageContent: string;
-  timestamp: string;
+  timestamp: number;
   type: MessageType;
   // null for cases of Proximity and Town Message
   directMessageId: string | undefined;
