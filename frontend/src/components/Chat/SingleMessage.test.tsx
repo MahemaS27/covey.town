@@ -6,7 +6,7 @@ import SingleMessage from './SingleMessage';
 const sampleMessage: Message = {
   userName: 'sampleName',
   userId: '123',
-  timestamp: 1616811720000,
+  timestamp: 1616797320000,
   messageContent:
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
   type: MessageType.TownMessage,
