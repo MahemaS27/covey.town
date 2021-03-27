@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
 import { Box, Button } from '@chakra-ui/react';
-import useCoveyAppState from '../../hooks/useCoveyAppState';
+// import useCoveyAppState from '../../hooks/useCoveyAppState';
 import ChatContainer from './ChatContainer';
 
-
-
 export default function DirectMessageSelect(): JSX.Element {
-    // const { apiClient } = useCoveyAppState();
     const [isViewingChatContainer, setIsViewingChatContainer] = useState<boolean>(false);
 
+    console.log(isViewingChatContainer);
     if (isViewingChatContainer === true) {
         return <ChatContainer />;
     }
