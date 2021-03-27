@@ -5,7 +5,7 @@ import ChatContainer from './ChatContainer';
 
 export default function ChatSelectTabs(): JSX.Element {
   return (
-    <Tabs isFitted variant='enclosed' defaultIndex={0} size="md">
+    <Tabs isLazy isFitted variant='enclosed' defaultIndex={0} size="md">
       <TabList mb='1em'>
         <Tab>All Direct Chats</Tab>
         <Tab>Town Chat</Tab>
