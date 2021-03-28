@@ -72,6 +72,11 @@ async function GameController(
     socket.emit('playerMovement', location);
     dispatchAppUpdate({ action: 'weMoved', location });
   };
+  const emitMessage = (message: Message) => {
+    socket.emit('messageSent', message);
+    // don't need to update the app with the sent message, the socket will emit messageReceived back to us
+    // and we update it then  
+  };
 
   dispatchAppUpdate({
     action: 'doConnect',
@@ -83,6 +88,7 @@ async function GameController(
       myPlayerID: gamePlayerID,
       townIsPubliclyListed: video.isPubliclyListed,
       emitMovement,
+      emitMessage,
       socket,
       players: initData.currentPlayers.map(sp => Player.fromServerPlayer(sp)),
     },

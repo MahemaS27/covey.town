@@ -53,6 +53,7 @@ function wrappedTownSettings() {
     },
     emitMovement: () => {
     },
+    emitMessage: () => {},
     apiClient: new TownsServiceClient(),
     townMessageChain: new MessageChain(),
     proximityMessageChain: new MessageChain(),
