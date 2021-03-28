@@ -1,4 +1,4 @@
-import { assert } from "console";
+import assert from 'assert';
 import { io } from "socket.io-client";
 import { Message } from "./classes/MessageChain";
 import Player, { ServerPlayer, UserLocation } from "./classes/Player";
