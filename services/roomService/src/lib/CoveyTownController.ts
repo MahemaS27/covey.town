@@ -132,12 +132,13 @@ export default class CoveyTownController {
    * @param message The incoming message
    */
   receiveMessage(message: Message): void {
+    let nearbyListeners;
     switch (message.type) {
       case MessageType.TownMessage:
         this._listeners.forEach(listener => listener.onMessageReceived(message));
         break;
       case MessageType.ProximityMessage:
-        const nearbyListeners = this.calculateNearbyListeners(this._players, message.location);
+        nearbyListeners = this.calculateNearbyListeners(this._players, message.location);
         nearbyListeners.forEach(listener => listener.onMessageReceived(message));
         break;
       default:
