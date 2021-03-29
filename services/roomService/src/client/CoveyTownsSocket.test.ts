@@ -87,12 +87,8 @@ describe('TownServiceApiSocket', () => {
     const {messageReceived} = TestUtils.createSocketClient(server, joinData2.coveySessionToken, town.coveyTownID);
     const {messageReceived: messageReceived2} = TestUtils.createSocketClient(server, joinData3.coveySessionToken, town.coveyTownID);
     const message = TestUtils.createMessageForTesting(MessageType.TownMessage, new Player(nanoid()));
-    console.log('created message');
-    console.log(message)
     socketSender.emit('messageSent', message);
     const [receivedMessage, otherReceivedMessage]= await Promise.all([messageReceived, messageReceived2]);
-    console.log('message after being sent through socket')
-    console.log(receivedMessage);
     expect(receivedMessage).toMatchObject(message);
     expect(otherReceivedMessage).toMatchObject(message);
   });
