@@ -1,6 +1,6 @@
 import assert from 'assert';
 import { io } from 'socket.io-client';
-import { Message } from './classes/MessageChain';
+import { Message, MessageType } from './classes/MessageChain';
 import Player, { ServerPlayer, UserLocation } from './classes/Player';
 import { TownJoinResponse } from './classes/TownsServiceClient';
 import Video from './classes/Video/Video';
@@ -50,6 +50,9 @@ export default async function GameController(
     // don't need to update the app with the sent message, the socket will emit messageReceived back to us
     // and we update it then
   };
+  const resetUnviewedMessages = (messageType: MessageType, directMessageId?: string):void => {
+    dispatchAppUpdate({ action: 'resetUnviewedMessages', messageType, directMessageId });
+  };
 
   dispatchAppUpdate({
     action: 'doConnect',
@@ -62,6 +65,7 @@ export default async function GameController(
       townIsPubliclyListed: video.isPubliclyListed,
       emitMovement,
       emitMessage,
+      resetUnviewedMessages,
       socket,
       players: initData.currentPlayers.map(sp => Player.fromServerPlayer(sp)),
     },

@@ -85,7 +85,8 @@ export default class MessageChain {
   /**
    * sets number of unviewed messages to zero
    */
-  resetNumberUnviewed(): void {
+  resetNumberUnviewed(): MessageChain {
     this._numberUnviewed = 0;
+    return this;
   }
 }

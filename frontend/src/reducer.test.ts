@@ -26,6 +26,7 @@ const createSampleAppState = (): CoveyAppState => ({
   },
   emitMovement: () => {},
   emitMessage: () => {},
+  resetUnviewedMessages: () => {},
   apiClient: new TownsServiceClient(),
   townMessageChain: new MessageChain(),
   proximityMessageChain: new MessageChain(),
@@ -123,7 +124,7 @@ describe('reducer', () => {
         player1Id,
         player2Id,
       );
-      
+
       const firstState = appStateReducer(createSampleAppState(), {
         action: 'messageReceived',
         message: messageToTest,
@@ -169,6 +170,124 @@ describe('reducer', () => {
       });
 
       expect(secondState.directMessageChains[directMessageId].isActive).toBe(false);
+    });
+  });
+  describe('resetUnviewedMessages', () => {
+    it('resets the unviewed messages for a town message chain', () => {
+      const messageToTest = createMessageForTesting(MessageType.TownMessage, nanoid());
+      const message2ToTest = createMessageForTesting(MessageType.ProximityMessage, nanoid());
+      const message3ToTest = createMessageForTesting(
+        MessageType.DirectMessage,
+        player1Id,
+        player2Id,
+      );
+
+      let state = appStateReducer(createSampleAppState(), {
+        action: 'messageReceived',
+        message: messageToTest,
+      });
+      state = appStateReducer(state, {
+        action: 'messageReceived',
+        message: message2ToTest,
+      });
+      state = appStateReducer(state, {
+        action: 'messageReceived',
+        message: message3ToTest,
+      });
+
+      expect(state.townMessageChain.numberUnviewed).toBe(1);
+      expect(state.proximityMessageChain.numberUnviewed).toBe(1);
+      expect(state.directMessageChains[directMessageId].numberUnviewed).toBe(1);
+
+      state = appStateReducer(state, {
+        action: 'resetUnviewedMessages',
+        messageType: MessageType.TownMessage,
+      });
+      expect(state.townMessageChain.numberUnviewed).toBe(0);
+      expect(state.proximityMessageChain.numberUnviewed).toBe(1);
+      expect(state.directMessageChains[directMessageId].numberUnviewed).toBe(1);
+    });
+    it('resets the unviewed messages for a proximity message chain', () => {
+      const messageToTest = createMessageForTesting(MessageType.TownMessage, nanoid());
+      const message2ToTest = createMessageForTesting(MessageType.ProximityMessage, nanoid());
+      const message3ToTest = createMessageForTesting(
+        MessageType.DirectMessage,
+        player1Id,
+        player2Id,
+      );
+
+      let state = appStateReducer(createSampleAppState(), {
+        action: 'messageReceived',
+        message: messageToTest,
+      });
+      state = appStateReducer(state, {
+        action: 'messageReceived',
+        message: message2ToTest,
+      });
+      state = appStateReducer(state, {
+        action: 'messageReceived',
+        message: message3ToTest,
+      });
+
+      expect(state.townMessageChain.numberUnviewed).toBe(1);
+      expect(state.proximityMessageChain.numberUnviewed).toBe(1);
+      expect(state.directMessageChains[directMessageId].numberUnviewed).toBe(1);
+
+      state = appStateReducer(state, {
+        action: 'resetUnviewedMessages',
+        messageType: MessageType.ProximityMessage,
+      });
+      expect(state.townMessageChain.numberUnviewed).toBe(1);
+      expect(state.proximityMessageChain.numberUnviewed).toBe(0);
+      expect(state.directMessageChains[directMessageId].numberUnviewed).toBe(1);
+    });
+
+    it('resets the unviewed messages for a direct message chain', () => {
+      const messageToTest = createMessageForTesting(MessageType.TownMessage, nanoid());
+      const message2ToTest = createMessageForTesting(MessageType.ProximityMessage, nanoid());
+      const message3ToTest = createMessageForTesting(
+        MessageType.DirectMessage,
+        player1Id,
+        player2Id,
+      );
+      const message4ToTest = createMessageForTesting(
+        MessageType.DirectMessage,
+        player1Id,
+        '4321',
+      );
+
+
+      let state = appStateReducer(createSampleAppState(), {
+        action: 'messageReceived',
+        message: messageToTest,
+      });
+      state = appStateReducer(state, {
+        action: 'messageReceived',
+        message: message2ToTest,
+      });
+      state = appStateReducer(state, {
+        action: 'messageReceived',
+        message: message3ToTest,
+      });
+      state = appStateReducer(state, {
+        action: 'messageReceived',
+        message: message4ToTest,
+      });
+
+
+      expect(state.townMessageChain.numberUnviewed).toBe(1);
+      expect(state.proximityMessageChain.numberUnviewed).toBe(1);
+      expect(state.directMessageChains[directMessageId].numberUnviewed).toBe(1);
+
+      state = appStateReducer(state, {
+        action: 'resetUnviewedMessages',
+        messageType: MessageType.DirectMessage,
+        directMessageId,
+      });
+      expect(state.townMessageChain.numberUnviewed).toBe(1);
+      expect(state.proximityMessageChain.numberUnviewed).toBe(1);
+      expect(state.directMessageChains[directMessageId].numberUnviewed).toBe(0);
+      expect(state.directMessageChains['123:4321'].numberUnviewed).toBe(1);
     });
   });
 });
