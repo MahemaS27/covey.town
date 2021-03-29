@@ -98,7 +98,7 @@ export function createMessageForTesting(
   type: MessageType,
   player1: Player,
 ): Message {
-  const timestamp = Date.now().toString();
+  const timestamp = Date.now();
   if (type == MessageType.ProximityMessage){
     return {
       userName: nanoid(),
