@@ -6,6 +6,7 @@ import {AddressInfo} from 'net';
 import http from 'http';
 import { Message, MessageType, UserLocation } from '../CoveyTypes';
 import { nanoid } from 'nanoid';
+import Player from '../types/Player';
 
 export type RemoteServerPlayer = {
   location: UserLocation, _userName: string, _id: string
@@ -94,17 +95,28 @@ export function setSessionTokenAndTownID(coveyTownID: string, sessionToken: stri
 
 export function createMessageForTesting(
   type: MessageType,
-  player1Id: string,
-  player2Id?: string,
+  player1: Player,
+  player2?: Player,
 ): Message {
   const timestamp = Date.now().toString();
   let directMessageID;
-  if (player2Id) {
-    directMessageID = `${player1Id}:${player2Id}`;
+  if (player2) {
+    directMessageID = `${player1.id}:${player2.id}`;
+  }
+  if (type == MessageType.ProximityMessage){
+    return {
+      userName: nanoid(),
+      userId: player1.id,
+      location: player1.location,
+      messageContent: "Omg I'm a test",
+      timestamp,
+      type,
+      directMessageId: directMessageID,
+    };
   }
   return {
     userName: nanoid(),
-    userId: player1Id,
+    userId: player1.id,
     location: { x: 1, y: 2, rotation: 'front', moving: false },
     messageContent: "Omg I'm a test",
     timestamp,
