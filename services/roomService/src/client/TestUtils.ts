@@ -96,13 +96,8 @@ export function setSessionTokenAndTownID(coveyTownID: string, sessionToken: stri
 export function createMessageForTesting(
   type: MessageType,
   player1: Player,
-  player2?: Player,
 ): Message {
   const timestamp = Date.now().toString();
-  let directMessageID;
-  if (player2) {
-    directMessageID = `${player1.id}:${player2.id}`;
-  }
   if (type == MessageType.ProximityMessage){
     return {
       userName: nanoid(),
@@ -111,7 +106,7 @@ export function createMessageForTesting(
       messageContent: "Omg I'm a test",
       timestamp,
       type,
-      directMessageId: directMessageID,
+      directMessageId: undefined,
     };
   }
   return {
@@ -121,7 +116,7 @@ export function createMessageForTesting(
     messageContent: "Omg I'm a test",
     timestamp,
     type,
-    directMessageId: directMessageID,
+    directMessageId: undefined,
   };
 }
 
