@@ -4,8 +4,9 @@ import {Socket as ServerSocket} from 'socket.io';
 
 import {AddressInfo} from 'net';
 import http from 'http';
-import { Message, MessageType, UserLocation } from '../CoveyTypes';
 import { nanoid } from 'nanoid';
+
+import { Message, MessageType, UserLocation } from '../CoveyTypes';
 
 export type RemoteServerPlayer = {
   location: UserLocation, _userName: string, _id: string
@@ -97,7 +98,7 @@ export function createMessageForTesting(
   player1Id: string,
   player2Id?: string,
 ): Message {
-  const timestamp = Date.now().toString();
+  const timestamp = Date.now();
   let directMessageID;
   if (player2Id) {
     directMessageID = `${player1Id}:${player2Id}`;

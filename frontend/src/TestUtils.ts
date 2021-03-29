@@ -6,7 +6,7 @@ export function createMessageForTesting(
   player1Id: string,
   player2Id?: string,
 ): Message {
-  const timestamp = Date.now().toString();
+  const timestamp = Date.now();
   let directMessageID;
   if (player2Id) {
     directMessageID = `${player1Id}:${player2Id}`;
