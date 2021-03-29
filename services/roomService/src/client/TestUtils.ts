@@ -4,9 +4,10 @@ import {Socket as ServerSocket} from 'socket.io';
 
 import {AddressInfo} from 'net';
 import http from 'http';
-import { Message, MessageType, UserLocation } from '../CoveyTypes';
 import { nanoid } from 'nanoid';
 import Player from '../types/Player';
+
+import { Message, MessageType, UserLocation } from '../CoveyTypes';
 
 export type RemoteServerPlayer = {
   location: UserLocation, _userName: string, _id: string
