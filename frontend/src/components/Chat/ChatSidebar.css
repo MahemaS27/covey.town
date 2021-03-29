@@ -14,3 +14,10 @@
   border-bottom: 1px solid lightgray;
   font-size: 1.5rem;
 }
+
+.chat-sidebar .back-arrow {
+  font-size: 2em;
+  max-height: 10px;
+  margin-top: -47px;
+  padding-right: 5px;
+}

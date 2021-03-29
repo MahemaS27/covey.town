@@ -1,0 +1,10 @@
+.chat-input-wrapper {
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.chat-input-wrapper .text-area {
+  width: 100%;
+  min-width: 0;
+}

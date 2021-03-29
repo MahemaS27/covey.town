@@ -3,7 +3,7 @@
 need to increase this value for the height of tabs when added */
 
 .scrollable-messages {
-  max-height: calc(100vh - 166px);
+  max-height: calc(100vh - 100px - 66px - 42px);
   overflow-y: auto;
   padding-bottom: 20px;
 }
