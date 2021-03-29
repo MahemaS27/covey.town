@@ -152,6 +152,7 @@ describe('CoveyTownController', () => {
       proximityMockListeners[1].getAssociatedPlayer.mockReturnValue(inBoundPlayer2);
       testingTown.addPlayer(inBoundPlayer1);
       testingTown.addPlayer(inBoundPlayer2);
+      proximityMockListeners.forEach(listener => testingTown.addTownListener(listener));
       const newLocation: UserLocation = {x:10000, y:10000, rotation:'back', moving: true}
       player.updateLocation(newLocation);
       inBoundPlayer1.updateLocation(newLocation);
@@ -162,8 +163,6 @@ describe('CoveyTownController', () => {
       expect(proximityMockListeners[0].onMessageReceived).toBeCalledWith(message);
       expect(proximityMockListeners[1].onMessageReceived).not.toBeCalledWith(message)
     })
-
-
 
     it('should notify added listeners that the town is destroyed when disconnectAllPlayers is called', async () => {
       const player = new Player('test player');
