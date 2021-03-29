@@ -25,6 +25,7 @@ const createSampleAppState = (): CoveyAppState => ({
     moving: false,
   },
   emitMovement: () => {},
+  emitMessage: () => {},
   apiClient: new TownsServiceClient(),
   townMessageChain: new MessageChain(),
   proximityMessageChain: new MessageChain(),

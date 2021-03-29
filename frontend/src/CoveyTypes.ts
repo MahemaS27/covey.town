@@ -1,5 +1,5 @@
 import { Socket } from 'socket.io-client';
-import MessageChain, { MessageChainHash } from './classes/MessageChain';
+import MessageChain, { Message, MessageChainHash } from './classes/MessageChain';
 import Player, { UserLocation } from './classes/Player';
 import TownsServiceClient from './classes/TownsServiceClient';
 
@@ -30,6 +30,7 @@ export type CoveyAppState = {
   currentLocation: UserLocation;
   nearbyPlayers: NearbyPlayers;
   emitMovement: (location: UserLocation) => void;
+  emitMessage: (message: Message) => void;
   socket: Socket | null;
   apiClient: TownsServiceClient;
   townMessageChain: MessageChain;

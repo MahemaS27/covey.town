@@ -18,6 +18,7 @@ export type CoveyAppUpdate =
         socket: Socket;
         players: Player[];
         emitMovement: (location: UserLocation) => void;
+        emitMessage: (message: Message) => void;
       };
     }
   | { action: 'addPlayer'; player: Player }
@@ -45,6 +46,7 @@ export function defaultAppState(): CoveyAppState {
       moving: false,
     },
     emitMovement: () => {},
+    emitMessage: () => {},
     apiClient: new TownsServiceClient(),
     townMessageChain: new MessageChain(),
     proximityMessageChain: new MessageChain(),
@@ -64,6 +66,7 @@ export function appStateReducer(state: CoveyAppState, update: CoveyAppUpdate): C
     userName: state.userName,
     socket: state.socket,
     emitMovement: state.emitMovement,
+    emitMessage: state.emitMessage,
     apiClient: state.apiClient,
     townMessageChain: state.townMessageChain,
     proximityMessageChain: state.proximityMessageChain,
@@ -103,6 +106,7 @@ export function appStateReducer(state: CoveyAppState, update: CoveyAppUpdate): C
       nextState.currentTownIsPubliclyListed = update.data.townIsPubliclyListed;
       nextState.userName = update.data.userName;
       nextState.emitMovement = update.data.emitMovement;
+      nextState.emitMessage = update.data.emitMessage;
       nextState.socket = update.data.socket;
       nextState.players = update.data.players;
       break;
