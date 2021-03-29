@@ -6,7 +6,8 @@ import {
     Thead,
     Tr,
 } from '@chakra-ui/react';
-import React from 'react';
+import React, { useCallback, useState } from 'react';
+import { MessageType } from '../../classes/MessageChain';
 import Player from '../../classes/Player';
 import useCoveyAppState from '../../hooks/useCoveyAppState';
 import ChatContainer from './ChatContainer';
@@ -20,23 +21,31 @@ export default function DirectMessageSelect({
     setIsViewingChatContainer,
 }: DirectMessageSelectProps): JSX.Element {
     const { myPlayerID, players, directMessageChains } = useCoveyAppState();
-    
-    const playersWithChats : Player[] = [];
-    const playersWithoutChats : Player[] = [];
-    
+    const [chosenDirectID, setDirectID] = useState<string>('');
+    const playersWithChats: Player[] = [];
+    const playersWithoutChats: Player[] = [];
+
     players.forEach((player) => {
         const directMessageId = [myPlayerID, player.id].sort().join(':');
-        if (directMessageChains[directMessageId]){
+        if (directMessageChains[directMessageId]) {
             playersWithChats.push(player);
         }
         else if (player.id !== myPlayerID) {
             playersWithoutChats.push(player);
         }
     })
-    // const handleChat;
-    // [nextState.myPlayerID, update.player.id].sort().join(':')
+
+    const handleChat = async (otherPlayerID: string) => {
+        const directMessageId = [myPlayerID, otherPlayerID].sort().join(':');
+        setDirectID(directMessageId);
+        setIsViewingChatContainer(true);
+    };
+
     if (isViewingChatContainer) {
-        return <ChatContainer />;
+        return <ChatContainer
+            directMessageID={chosenDirectID}
+            chainType={MessageType.DirectMessage}
+        />;
     }
     return (
         <div>
@@ -49,7 +58,7 @@ export default function DirectMessageSelect({
                             <Tr key={player.id}>
                                 <Td role='cell'>{player.userName} #{player.id.slice(-4)}</Td>
                                 <Td role='cell'>
-                                    <Button onClick={() => setIsViewingChatContainer(true)}
+                                    <Button onClick={() => handleChat(player.id)}
                                     >Continue Chat</Button></Td></Tr>
                         ))}
                     </Tbody>
@@ -64,7 +73,7 @@ export default function DirectMessageSelect({
                             <Tr key={player.id}>
                                 <Td role='cell'>{player.userName} #{player.id.slice(-4)}</Td>
                                 <Td role='cell'>
-                                    <Button onClick={() => setIsViewingChatContainer(true)}
+                                    <Button onClick={() => handleChat(player.id)}
                                     >Start Chat</Button></Td></Tr>
                         ))}
                     </Tbody>

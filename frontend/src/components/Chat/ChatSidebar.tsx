@@ -1,5 +1,6 @@
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
 import React, { useState } from 'react';
+import { MessageType } from '../../classes/MessageChain';
 import ChatContainer from './ChatContainer';
 import './ChatSidebar.css';
 import DirectMessageSelect from './DirectMessageSelect';
@@ -34,10 +35,10 @@ export default function ChatSidebar(): JSX.Element {
             />
           </TabPanel>
           <TabPanel>
-            <ChatContainer />
+            <ChatContainer chainType={MessageType.TownMessage} directMessageID=''/>
           </TabPanel>
           <TabPanel>
-            <ChatContainer />
+            <ChatContainer chainType={MessageType.ProximityMessage} directMessageID=''/>
           </TabPanel>
         </TabPanels>
       </Tabs>
