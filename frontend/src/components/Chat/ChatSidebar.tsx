@@ -35,10 +35,10 @@ export default function ChatSidebar(): JSX.Element {
             />
           </TabPanel>
           <TabPanel>
-            <ChatContainer chainType={MessageType.TownMessage} directMessageID=''/>
+            <ChatContainer chainType={MessageType.TownMessage} directMessageID={undefined} />
           </TabPanel>
           <TabPanel>
-            <ChatContainer chainType={MessageType.ProximityMessage} directMessageID=''/>
+            <ChatContainer chainType={MessageType.ProximityMessage} directMessageID={undefined} />
           </TabPanel>
         </TabPanels>
       </Tabs>

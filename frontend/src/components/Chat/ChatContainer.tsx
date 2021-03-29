@@ -21,10 +21,9 @@ const sampleMessage: Message = {
 };
 
 interface ChatContainerProps {
-  // i want this to be optional but i'm having a lot of difficulty setting a default (react requires)
-  // so for now- Town/Proximity will pass in an empty string
-  directMessageID: string,
-  chainType: MessageType,
+  // so for now- Town/Proximity will pass in undefined
+  directMessageID: string | undefined;
+  chainType: MessageType;
 }
 
 export default function ChatContainer({
