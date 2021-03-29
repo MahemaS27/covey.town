@@ -1,5 +1,5 @@
 import { nanoid } from 'nanoid';
-import { Message, MessageType, UserLocation } from '../CoveyTypes';
+import { UserLocation } from '../CoveyTypes';
 
 /**
  * Each user who is connected to a town is represented by a Player object

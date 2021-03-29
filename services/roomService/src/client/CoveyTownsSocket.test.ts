@@ -5,7 +5,7 @@ import { nanoid } from 'nanoid';
 import { AddressInfo } from 'net';
 import * as TestUtils from './TestUtils';
 
-import { MessageType, UserLocation } from '../CoveyTypes';
+import { UserLocation } from '../CoveyTypes';
 import TownsServiceClient from './TownsServiceClient';
 import addTownRoutes from '../router/towns';
 

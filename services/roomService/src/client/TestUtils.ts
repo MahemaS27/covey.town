@@ -1,16 +1,16 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import {io, Socket} from 'socket.io-client';
-import {Socket as ServerSocket} from 'socket.io';
-
-import {AddressInfo} from 'net';
 import http from 'http';
 import { nanoid } from 'nanoid';
+import { AddressInfo } from 'net';
+import { Socket as ServerSocket } from 'socket.io';
+import { io, Socket } from 'socket.io-client';
+import { Message, MessageType, UserLocation } from '../CoveyTypes';
 import Player from '../types/Player';
 
-import { Message, MessageType, UserLocation } from '../CoveyTypes';
-
 export type RemoteServerPlayer = {
-  location: UserLocation, _userName: string, _id: string
+  location: UserLocation;
+  _userName: string;
+  _id: string;
 };
 const createdSocketClients: Socket[] = [];
 
@@ -20,7 +20,7 @@ const createdSocketClients: Socket[] = [];
  * be called in the afterEach() handler in any test suite that calls createSocketClient (this should already be in place
  * in the handout code))
  */
-export function cleanupSockets() : void {
+export function cleanupSockets(): void {
   while (createdSocketClients.length) {
     const socket = createdSocketClients.pop();
     if (socket && socket.connected) {
@@ -41,40 +41,45 @@ export function cleanupSockets() : void {
  * @param sessionToken A Covey.Town session token to pass as authentication
  * @param coveyTownID A Covey.Town Town ID to pass to the server as our desired town
  */
-export function createSocketClient(server: http.Server, sessionToken: string, coveyTownID: string): {
-  socket: Socket,
-  socketConnected: Promise<void>,
-  socketDisconnected: Promise<void>,
-  playerMoved: Promise<RemoteServerPlayer>,
-  newPlayerJoined: Promise<RemoteServerPlayer>,
-  playerDisconnected: Promise<RemoteServerPlayer>,
+export function createSocketClient(
+  server: http.Server,
+  sessionToken: string,
+  coveyTownID: string,
+): {
+  socket: Socket;
+  socketConnected: Promise<void>;
+  socketDisconnected: Promise<void>;
+  playerMoved: Promise<RemoteServerPlayer>;
+  newPlayerJoined: Promise<RemoteServerPlayer>;
+  playerDisconnected: Promise<RemoteServerPlayer>;
 } {
   const address = server.address() as AddressInfo;
   const socket = io(`http://localhost:${address.port}`, {
-    auth: {token: sessionToken, coveyTownID},
-    reconnection: false, timeout: 5000,
+    auth: { token: sessionToken, coveyTownID },
+    reconnection: false,
+    timeout: 5000,
   });
-  const connectPromise = new Promise<void>((resolve) => {
+  const connectPromise = new Promise<void>(resolve => {
     socket.on('connect', () => {
       resolve();
     });
   });
-  const disconnectPromise = new Promise<void>((resolve) => {
+  const disconnectPromise = new Promise<void>(resolve => {
     socket.on('disconnect', () => {
       resolve();
     });
   });
-  const playerMovedPromise = new Promise<RemoteServerPlayer>((resolve) => {
+  const playerMovedPromise = new Promise<RemoteServerPlayer>(resolve => {
     socket.on('playerMoved', (player: RemoteServerPlayer) => {
       resolve(player);
     });
   });
-  const newPlayerPromise = new Promise<RemoteServerPlayer>((resolve) => { 
+  const newPlayerPromise = new Promise<RemoteServerPlayer>(resolve => {
     socket.on('newPlayer', (player: RemoteServerPlayer) => {
       resolve(player);
     });
   });
-  const playerDisconnectPromise = new Promise<RemoteServerPlayer>((resolve) => {
+  const playerDisconnectPromise = new Promise<RemoteServerPlayer>(resolve => {
     socket.on('playerDisconnect', (player: RemoteServerPlayer) => {
       resolve(player);
     });
@@ -89,17 +94,18 @@ export function createSocketClient(server: http.Server, sessionToken: string, co
     playerDisconnected: playerDisconnectPromise,
   };
 }
-export function setSessionTokenAndTownID(coveyTownID: string, sessionToken: string, socket: ServerSocket):void {
+export function setSessionTokenAndTownID(
+  coveyTownID: string,
+  sessionToken: string,
+  socket: ServerSocket,
+): void {
   // eslint-disable-next-line
-  socket.handshake.auth = {token: sessionToken, coveyTownID};
+  socket.handshake.auth = { token: sessionToken, coveyTownID };
 }
 
-export function createMessageForTesting(
-  type: MessageType,
-  player1: Player,
-): Message {
+export function createMessageForTesting(type: MessageType, player1: Player): Message {
   const timestamp = Date.now();
-  if (type == MessageType.ProximityMessage){
+  if (type === MessageType.ProximityMessage) {
     return {
       userName: nanoid(),
       userId: player1.id,
@@ -120,4 +126,3 @@ export function createMessageForTesting(
     directMessageId: undefined,
   };
 }
-
