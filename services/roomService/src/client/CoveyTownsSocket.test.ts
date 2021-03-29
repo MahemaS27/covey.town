@@ -5,9 +5,10 @@ import { nanoid } from 'nanoid';
 import { AddressInfo } from 'net';
 import * as TestUtils from './TestUtils';
 
-import { UserLocation } from '../CoveyTypes';
+import { MessageType, UserLocation } from '../CoveyTypes';
 import TownsServiceClient from './TownsServiceClient';
 import addTownRoutes from '../router/towns';
+import Player from '../types/Player';
 
 type TestTownData = {
   friendlyName: string, coveyTownID: string,
@@ -76,6 +77,24 @@ describe('TownServiceApiSocket', () => {
     const [movedPlayer, otherMovedPlayer]= await Promise.all([playerMoved, playerMoved2]);
     expect(movedPlayer.location).toMatchObject(newLocation);
     expect(otherMovedPlayer.location).toMatchObject(newLocation);
+  });
+  it('Dispatches town messages to all clients in the same town', async () => {
+    const town = await createTownForTesting();
+    const joinData = await apiClient.joinTown({coveyTownID: town.coveyTownID, userName: nanoid()});
+    const joinData2 = await apiClient.joinTown({coveyTownID: town.coveyTownID, userName: nanoid()});
+    const joinData3 = await apiClient.joinTown({coveyTownID: town.coveyTownID, userName: nanoid()});
+    const socketSender = TestUtils.createSocketClient(server, joinData.coveySessionToken, town.coveyTownID).socket;
+    const {messageReceived} = TestUtils.createSocketClient(server, joinData2.coveySessionToken, town.coveyTownID);
+    const {messageReceived: messageReceived2} = TestUtils.createSocketClient(server, joinData3.coveySessionToken, town.coveyTownID);
+    const message = TestUtils.createMessageForTesting(MessageType.TownMessage, new Player(nanoid()));
+    console.log('created message');
+    console.log(message)
+    socketSender.emit('messageSent', message);
+    const [receivedMessage, otherReceivedMessage]= await Promise.all([messageReceived, messageReceived2]);
+    console.log('message after being sent through socket')
+    console.log(receivedMessage);
+    expect(receivedMessage).toMatchObject(message);
+    expect(otherReceivedMessage).toMatchObject(message);
   });
   it('Invalidates the user session after disconnection', async () => {
     // This test will timeout if it fails - it will never reach the expectation
