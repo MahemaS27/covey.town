@@ -5,6 +5,7 @@ import {Socket as ServerSocket} from 'socket.io';
 import {AddressInfo} from 'net';
 import http from 'http';
 import { nanoid } from 'nanoid';
+import Player from '../types/Player';
 
 import { Message, MessageType, UserLocation } from '../CoveyTypes';
 
@@ -95,22 +96,28 @@ export function setSessionTokenAndTownID(coveyTownID: string, sessionToken: stri
 
 export function createMessageForTesting(
   type: MessageType,
-  player1Id: string,
-  player2Id?: string,
+  player1: Player,
 ): Message {
-  const timestamp = Date.now();
-  let directMessageID;
-  if (player2Id) {
-    directMessageID = `${player1Id}:${player2Id}`;
+  const timestamp = Date.now().toString();
+  if (type == MessageType.ProximityMessage){
+    return {
+      userName: nanoid(),
+      userId: player1.id,
+      location: player1.location,
+      messageContent: "Omg I'm a test",
+      timestamp,
+      type,
+      directMessageId: undefined,
+    };
   }
   return {
     userName: nanoid(),
-    userId: player1Id,
+    userId: player1.id,
     location: { x: 1, y: 2, rotation: 'front', moving: false },
     messageContent: "Omg I'm a test",
     timestamp,
     type,
-    directMessageId: directMessageID,
+    directMessageId: undefined,
   };
 }
 
