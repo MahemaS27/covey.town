@@ -73,7 +73,7 @@ describe('game controller', () => {
     expect(socket.emit).toBeCalledWith('messageSent', message);
   });
 
-  it('dispatches an update to the socket when a unviewed messages are reset', async () => {
+  it('dispatches an update to the app when unviewed messages are reset', async () => {
     process.env.REACT_APP_TOWNS_SERVICE_URL = 'testurl.com';
     const dispatchAppUpdate = jest.fn();
     const initData = {

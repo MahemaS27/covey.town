@@ -111,7 +111,7 @@ export function appStateReducer(state: CoveyAppState, update: CoveyAppUpdate): C
       nextState.userName = update.data.userName;
       nextState.emitMovement = update.data.emitMovement;
       nextState.emitMessage = update.data.emitMessage;
-      nextState.resetUnviewedMessages, (nextState.socket = update.data.socket);
+      nextState.socket = update.data.socket;
       nextState.players = update.data.players;
       break;
     case 'addPlayer':
