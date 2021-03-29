@@ -17,7 +17,7 @@ const sampleMessage: Message = {
     rotation: 'front',
     moving: false,
   },
-  directMessageId: undefined,
+  directMessageId: null,
 };
 
 describe('SingleMessage', () => {
