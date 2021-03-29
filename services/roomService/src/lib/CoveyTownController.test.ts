@@ -59,6 +59,10 @@ describe('CoveyTownController', () => {
       mock<CoveyTownListener>(),
       mock<CoveyTownListener>(),
     ];
+    const proximityMockListeners = [
+      mock<CoveyTownListener>(),
+      mock<CoveyTownListener>(),
+    ]
     beforeEach(() => {
       const townName = `town listeners and events tests ${nanoid()}`;
       testingTown = new CoveyTownController(townName, false);
@@ -92,11 +96,46 @@ describe('CoveyTownController', () => {
     it('should notify all listeners of a new message when a TownMessage is sent', async () => {
       mockListeners.forEach(listener => testingTown.addTownListener(listener));
       const player = new Player('test player');
-      const message = TestUtils.createMessageForTesting(MessageType.TownMessage, player.id);
+      const message = TestUtils.createMessageForTesting(MessageType.TownMessage, player);
 
       testingTown.receiveMessage(message);
       mockListeners.forEach(listener => expect(listener.onMessageReceived).toBeCalledWith(message));
     });
+    it('should notify nearby listeners of a new message when a ProximityMessage is sent', async () => {
+      const inBoundPlayer1 = new Player('test player 1');
+      const inBoundPlayer2 = new Player('test player 2');
+      const player = new Player('test player');
+      proximityMockListeners[0].getAssociatedPlayer.mockReturnValue(inBoundPlayer1);
+      proximityMockListeners[1].getAssociatedPlayer.mockReturnValue(inBoundPlayer2);
+      testingTown.addPlayer(inBoundPlayer1);
+      testingTown.addPlayer(inBoundPlayer2);
+      testingTown.addPlayer(player);
+      proximityMockListeners.forEach(listener => testingTown.addTownListener(listener));
+      const message = TestUtils.createMessageForTesting(MessageType.ProximityMessage, player);
+
+      testingTown.receiveMessage(message);
+      proximityMockListeners.forEach(listener => expect(listener.onMessageReceived).toBeCalledWith(message));
+    });
+
+    it ('should not notify listeners that are out of proximity range when a ProximityMessage is sent', async() => {
+      const inBoundPlayer1 = new Player('test player 1');
+      const inBoundPlayer2 = new Player('test player 2');
+      const player = new Player('test player');
+      proximityMockListeners[0].getAssociatedPlayer.mockReturnValue(inBoundPlayer1);
+      proximityMockListeners[1].getAssociatedPlayer.mockReturnValue(inBoundPlayer2);
+      testingTown.addPlayer(inBoundPlayer1);
+      testingTown.addPlayer(inBoundPlayer2);
+      testingTown.addPlayer(player);
+      proximityMockListeners.forEach(listener => testingTown.addTownListener(listener));
+      // update the player location so that they are way out of proximity
+      const newLocation: UserLocation = {x:1000, y:1000, rotation:'back', moving: true}
+      player.updateLocation(newLocation);
+      const message = TestUtils.createMessageForTesting(MessageType.ProximityMessage, player);
+
+      testingTown.receiveMessage(message);
+      proximityMockListeners.forEach(listener => expect(listener.onMessageReceived).not.toBeCalledWith(message));
+    });
+
     it('should notify added listeners that the town is destroyed when disconnectAllPlayers is called', async () => {
       const player = new Player('test player');
       await testingTown.addPlayer(player);
