@@ -352,7 +352,7 @@ describe('CoveyTownController', () => {
           fail('No playerMovement handler registered');
         }
       });
-      it('should forward messageSent events from the socket to subscribed listeners', async() => {
+      it('should forward messageSent events from the socket to subscribed listeners', async () => {
         TestUtils.setSessionTokenAndTownID(
           testingTown.coveyTownID,
           session.sessionToken,
