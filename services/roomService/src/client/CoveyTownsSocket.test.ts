@@ -78,19 +78,20 @@ describe('TownServiceApiSocket', () => {
     expect(movedPlayer.location).toMatchObject(newLocation);
     expect(otherMovedPlayer.location).toMatchObject(newLocation);
   });
-  it('Dispatches town messages to all clients in the same town', async () => {
+  it('Dispatches town messages to all clients in the same town, including the client who sent the message', async () => {
     const town = await createTownForTesting();
     const joinData = await apiClient.joinTown({coveyTownID: town.coveyTownID, userName: nanoid()});
     const joinData2 = await apiClient.joinTown({coveyTownID: town.coveyTownID, userName: nanoid()});
     const joinData3 = await apiClient.joinTown({coveyTownID: town.coveyTownID, userName: nanoid()});
-    const socketSender = TestUtils.createSocketClient(server, joinData.coveySessionToken, town.coveyTownID).socket;
-    const {messageReceived} = TestUtils.createSocketClient(server, joinData2.coveySessionToken, town.coveyTownID);
-    const {messageReceived: messageReceived2} = TestUtils.createSocketClient(server, joinData3.coveySessionToken, town.coveyTownID);
+    const {socket, messageReceived} = TestUtils.createSocketClient(server, joinData.coveySessionToken, town.coveyTownID);
+    const {messageReceived: messageReceived2} = TestUtils.createSocketClient(server, joinData2.coveySessionToken, town.coveyTownID);
+    const {messageReceived: messageReceived3} = TestUtils.createSocketClient(server, joinData3.coveySessionToken, town.coveyTownID);
     const message = TestUtils.createMessageForTesting(MessageType.TownMessage, new Player(nanoid()));
-    socketSender.emit('messageSent', message);
-    const [receivedMessage, otherReceivedMessage]= await Promise.all([messageReceived, messageReceived2]);
-    expect(receivedMessage).toMatchObject(message);
-    expect(otherReceivedMessage).toMatchObject(message);
+    socket.emit('messageSent', message);
+    const [firstMessage, secondMessage, thirdMessage] = await Promise.all([messageReceived, messageReceived2, messageReceived3]);
+    expect(firstMessage).toMatchObject(message);
+    expect(secondMessage).toMatchObject(message);
+    expect(thirdMessage).toMatchObject(message);
   });
   it('Invalidates the user session after disconnection', async () => {
     // This test will timeout if it fails - it will never reach the expectation
