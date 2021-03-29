@@ -2,7 +2,7 @@ import { mock } from 'jest-mock-extended';
 import { nanoid } from 'nanoid';
 import { MessageType } from './classes/MessageChain';
 import Video from './classes/Video/Video';
-import { GameController } from './GameController';
+import GameController from './GameController';
 import { createMessageForTesting } from './TestUtils';
 
 jest.mock('./classes/Video/Video');
@@ -16,9 +16,7 @@ jest.mock('socket.io-client', () => ({
 
 const mockVideoSetup = mock<Video>();
 
-Video.instance = () => {
-  return mockVideoSetup;
-};
+Video.instance = () =>  mockVideoSetup;
 
 describe('game controller', () => {
   // from https://stackoverflow.com/questions/48033841/test-process-env-with-jest
@@ -47,10 +45,7 @@ describe('game controller', () => {
 
     await GameController(initData, dispatchAppUpdate);
 
-    const dispatchAppData = dispatchAppUpdate.mock.calls[0][0].data;
-    const emitMessage = dispatchAppData.emitMessage;
-    console.log(emitMessage);
-    const socket = dispatchAppData.socket;
+    const { emitMessage, socket } = dispatchAppUpdate.mock.calls[0][0].data;
     const message = createMessageForTesting(MessageType.TownMessage, nanoid());
 
     emitMessage(message);

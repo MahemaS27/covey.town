@@ -6,10 +6,10 @@ import { TownJoinResponse } from './classes/TownsServiceClient';
 import Video from './classes/Video/Video';
 import { CoveyAppUpdate } from './reducer';
 
-export async function GameController(
+export default async function GameController(
   initData: TownJoinResponse,
   dispatchAppUpdate: (update: CoveyAppUpdate) => void,
-) {
+): Promise<boolean> {
   // Now, set up the game sockets
   const gamePlayerID = initData.coveyUserID;
   const sessionToken = initData.coveySessionToken;

@@ -1,6 +1,5 @@
 import { ChakraProvider } from '@chakra-ui/react';
 import { MuiThemeProvider } from '@material-ui/core/styles';
-import assert from 'assert';
 import React, {
   Dispatch,
   SetStateAction,
@@ -11,10 +10,7 @@ import React, {
   useState,
 } from 'react';
 import { BrowserRouter } from 'react-router-dom';
-import { io } from 'socket.io-client';
 import './App.css';
-import { Message } from './classes/MessageChain';
-import Player, { ServerPlayer, UserLocation } from './classes/Player';
 import { TownJoinResponse } from './classes/TownsServiceClient';
 import Video from './classes/Video/Video';
 import ChatSidebar from './components/Chat/ChatSidebar';
@@ -31,8 +27,8 @@ import WorldMap from './components/world/WorldMap';
 import CoveyAppContext from './contexts/CoveyAppContext';
 import NearbyPlayersContext from './contexts/NearbyPlayersContext';
 import VideoContext from './contexts/VideoContext';
-import { GameController } from './GameController'
-import { appStateReducer, CoveyAppUpdate, defaultAppState } from './reducer';
+import GameController from './GameController'
+import { appStateReducer, defaultAppState } from './reducer';
 
 
 
