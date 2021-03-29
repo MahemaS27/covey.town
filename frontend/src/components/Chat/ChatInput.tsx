@@ -81,7 +81,7 @@ export default function ChatInput({ messageType, directMessageId }: ChatInputPro
   );
 
   return (
-    <form>
+    <form onSubmit={handleSendMessage} data-testid='chat-form'>
       <div className='chat-input-wrapper'>
         <div className='text-area'>
           <Textarea
@@ -92,6 +92,7 @@ export default function ChatInput({ messageType, directMessageId }: ChatInputPro
             onBlur={handleOnBlur}
             height='100px'
             resize='none'
+            data-testid='textarea-component'
             id='message-to-send'
             aria-label='Send a message...'
             placeholder='Send a message...'
@@ -105,8 +106,7 @@ export default function ChatInput({ messageType, directMessageId }: ChatInputPro
             borderRadius='0'
             height='100px'
             disabled={!canSendMessage}
-            type='submit'
-            onClick={handleSendMessage}>
+            type='submit'>
             Send
           </Button>
         </div>
