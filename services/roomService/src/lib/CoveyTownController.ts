@@ -207,6 +207,7 @@ export default class CoveyTownController {
       nearbyPlayers.includes(listener.getAssociatedPlayer()),
     );
   }
+  
   /**
    * Informs the correct listener that a direct message has been sent
    * @param directMessageId
