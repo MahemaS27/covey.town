@@ -93,6 +93,31 @@ describe('TownServiceApiSocket', () => {
     expect(secondMessage).toMatchObject(message);
     expect(thirdMessage).toMatchObject(message);
   });
+  it('Dispatches proximity messages to all nearby clients in the same town, including the client who sent the message', async () => {
+    const town = await createTownForTesting();
+    const joinData = await apiClient.joinTown({coveyTownID: town.coveyTownID, userName: nanoid()});
+    const joinData2 = await apiClient.joinTown({coveyTownID: town.coveyTownID, userName: nanoid()});
+    const joinData3 = await apiClient.joinTown({coveyTownID: town.coveyTownID, userName: nanoid()});
+    const {socket: movementSocket, messageReceived: shouldNotResolve} = TestUtils.createSocketClient(server, joinData.coveySessionToken, town.coveyTownID);
+    const {socket: messageSocket, messageReceived, playerMoved} = TestUtils.createSocketClient(server, joinData2.coveySessionToken, town.coveyTownID);
+    const {messageReceived: messageReceived2, playerMoved: playerMoved2} = TestUtils.createSocketClient(server, joinData3.coveySessionToken, town.coveyTownID);
+
+    const newLocation: UserLocation = {x: 100, y: 100, moving: true, rotation: 'back'};
+    movementSocket.emit('playerMovement', newLocation); // moves first client out of range for proximity chat
+    await Promise.all([playerMoved, playerMoved2]); // makes sure that other two clients register this movement
+
+    // message will be originating from a mew Player's starting location, which is the same place that the second and third clients are located at
+    const message = TestUtils.createMessageForTesting(MessageType.ProximityMessage, new Player(nanoid())); 
+    messageSocket.emit('messageSent', message);
+    const [firstMessage, secondMessage] = await Promise.all([messageReceived, messageReceived2]); // It should therefore be received by these two clients
+    expect(firstMessage).toMatchObject(message);
+    expect(secondMessage).toMatchObject(message);
+    try {
+      await shouldNotResolve; // but not the first one, which is out of range
+    } catch (e) {
+      expect(e).toBeTruthy
+    }
+  });
   it('Invalidates the user session after disconnection', async () => {
     // This test will timeout if it fails - it will never reach the expectation
     const town = await createTownForTesting();
