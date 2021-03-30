@@ -54,6 +54,7 @@ function wrappedTownSettings() {
     emitMovement: () => {
     },
     emitMessage: () => {},
+    resetUnviewedMessages: () => {},
     apiClient: new TownsServiceClient(),
     townMessageChain: new MessageChain(),
     proximityMessageChain: new MessageChain(),
