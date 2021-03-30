@@ -141,6 +141,14 @@ export default class CoveyTownController {
         nearbyListeners = this.calculateNearbyListeners(this._players, message.location);
         nearbyListeners.forEach(listener => listener.onMessageReceived(message));
         break;
+      case MessageType.DirectMessage:
+        if (message.directMessageId) {
+          const directMessageListener = this.getDirectMessageListener(
+            message.directMessageId,
+          );
+          directMessageListener.onMessageReceived(message);
+        }
+        break;
       default:
         break;
     }
@@ -180,6 +188,12 @@ export default class CoveyTownController {
     this._listeners.forEach(listener => listener.onTownDestroyed());
   }
 
+  /**
+   * Calculates the listeners that need to be informed of a proximity message being sent
+   * @param players 
+   * @param currentLocation 
+   * @returns a list of listeners that are in the proximity of the message location
+   */
   calculateNearbyListeners(players: Player[], currentLocation: UserLocation): CoveyTownListener[] {
     const isWithinCallRadius = (p: Player, location: UserLocation) => {
       if (p.location && location) {
@@ -194,5 +208,17 @@ export default class CoveyTownController {
     return this._listeners.filter(listener =>
       nearbyPlayers.includes(listener.getAssociatedPlayer()),
     );
+  }
+/**
+ * Informs the correct listener that a direct message has been sent
+ * @param directMessageId 
+ * @returns the listener that is recieving the message being sent
+ */
+  getDirectMessageListener(directMessageId: string): CoveyTownListener {
+    const matchingPlayerID = directMessageId.split(':')[1];
+    const directMessageListener = this._listeners.filter(
+      listener => listener.getAssociatedPlayer().id === matchingPlayerID,
+    );
+    return directMessageListener[0];
   }
 }
