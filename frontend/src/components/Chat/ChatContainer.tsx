@@ -20,10 +20,10 @@ const sampleMessage: Message = {
   },
   directMessageId: null,
 };
-
+ 
 interface ChatContainerProps {
   // so for now- Town/Proximity will pass in undefined
-  directMessageID: string | undefined;
+  directMessageID: string | null;
   chainType: MessageType;
 }
 

@@ -8,7 +8,7 @@ import './ChatInput.css';
 
 interface ChatInputProps {
   messageType: MessageType;
-  directMessageId: string | undefined;
+  directMessageId: string | null;
 }
 
 // an input for sending messages from frontend to the socket

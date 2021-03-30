@@ -22,11 +22,7 @@ export default function ChatSidebar(): JSX.Element {
       <Tabs isLazy isFitted variant='enclosed' defaultIndex={0} size='md'>
         <TabList>
           <Tab onClick={isViewingDirectChatContainer ? handleReturnToSelect : undefined}>
-            {isViewingDirectChatContainer ? (
-              <span className="back-arrow" >
-                ‹
-              </span>
-            ) : null}
+            {isViewingDirectChatContainer ? <span className='back-arrow'>‹</span> : null}
             {directMessageTab}
           </Tab>
           <Tab>Town Chat</Tab>
@@ -40,10 +36,10 @@ export default function ChatSidebar(): JSX.Element {
             />
           </TabPanel>
           <TabPanel padding='0'>
-            <ChatContainer chainType={MessageType.TownMessage} directMessageID={undefined} />
+            <ChatContainer chainType={MessageType.TownMessage} directMessageID={null} />
           </TabPanel>
           <TabPanel padding='0'>
-            <ChatContainer chainType={MessageType.ProximityMessage} directMessageID={undefined} />
+            <ChatContainer chainType={MessageType.ProximityMessage} directMessageID={null} />
           </TabPanel>
         </TabPanels>
       </Tabs>

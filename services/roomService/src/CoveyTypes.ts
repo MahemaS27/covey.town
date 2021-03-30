@@ -8,9 +8,9 @@ export type UserLocation = {
 export type CoveyTownList = { friendlyName: string; coveyTownID: string; currentOccupancy: number; maximumOccupancy: number }[];
 
 export enum MessageType {
-  DirectMessage,
-  ProximityMessage,
-  TownMessage,
+  DirectMessage = 'DirectMessage',
+  ProximityMessage = 'ProximityMessage',
+  TownMessage  = 'TownMessage',
 }
 
 export type Message = {
