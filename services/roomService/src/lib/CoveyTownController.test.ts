@@ -137,7 +137,6 @@ describe('CoveyTownController', () => {
         expect(listener.onMessageReceived).not.toBeCalledWith(message),
       );
     });
-
     it('should notify listeners in range of ProximityMessage and not notify listeners out of range', async () => {
       const proximityMockListeners = [mock<CoveyTownListener>(), mock<CoveyTownListener>()];
       const inBoundPlayer1 = new Player('test player 1');
@@ -158,7 +157,33 @@ describe('CoveyTownController', () => {
       expect(proximityMockListeners[0].onMessageReceived).toBeCalledWith(message);
       expect(proximityMockListeners[1].onMessageReceived).not.toBeCalledWith(message);
     });
+    it('should notify the correct listener when a direct message is sent', async () => {
+      const directMockListeners = [mock<CoveyTownListener>(), mock<CoveyTownListener>()];
+      // player sending message
+      const player1 = new Player('test player 1');
+      // player recieiving direct message
+      const player2 = new Player('test player 2');
+      // player not involved in direct message
+      const player3 = new Player('test player 3');
+      directMockListeners[0].getAssociatedPlayer.mockReturnValue(player2);
+      directMockListeners[1].getAssociatedPlayer.mockReturnValue(player3);
+      testingTown.addPlayer(player2);
+      testingTown.addPlayer(player3);
+      directMockListeners.forEach(listener => testingTown.addTownListener(listener));
 
+      // create a direct message between player 1 and player 2
+      const message = TestUtils.createMessageForTesting(
+        MessageType.DirectMessage,
+        player1,
+        player2,
+      );
+      testingTown.receiveMessage(message);
+
+      // check that player 2 recieved the direct message
+      expect(directMockListeners[0].onMessageReceived).toBeCalledWith(message);
+      // check that player 3 did not recieive the message
+      expect(directMockListeners[1].onMessageReceived).not.toBeCalledWith(message);
+    });
     it('should notify added listeners that the town is destroyed when disconnectAllPlayers is called', async () => {
       const player = new Player('test player');
       await testingTown.addPlayer(player);

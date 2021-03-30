@@ -110,7 +110,7 @@ export function setSessionTokenAndTownID(
   socket.handshake.auth = { token: sessionToken, coveyTownID };
 }
 
-export function createMessageForTesting(type: MessageType, player1: Player): Message {
+export function createMessageForTesting(type: MessageType, player1: Player, player2?: Player): Message {
   const timestamp = Date.now();
   if (type === MessageType.ProximityMessage) {
     return {
@@ -121,6 +121,17 @@ export function createMessageForTesting(type: MessageType, player1: Player): Mes
       timestamp,
       type,
       directMessageId: null,
+    };
+  }
+  if (type === MessageType.DirectMessage && player2){
+    return {
+      userName: nanoid(),
+      userId: player1.id,
+      location: player1.location,
+      messageContent: "Omg I'm a test",
+      timestamp,
+      type,
+      directMessageId: `${player1.id}:${player2.id}`,
     };
   }
   return {
