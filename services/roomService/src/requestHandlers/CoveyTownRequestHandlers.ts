@@ -253,4 +253,10 @@ export function townSubscriptionHandler(socket: Socket): void {
   socket.on('playerMovement', (movementData: UserLocation) => {
     townController.updatePlayerLocation(s.player, movementData);
   });
+
+  // Register an event listener for the client socket: if the client sends 
+  // a message, inform the CoveyTownController
+  socket.on('messageSent', (message: Message) => {
+    townController.receiveMessage(message);
+  });
 }

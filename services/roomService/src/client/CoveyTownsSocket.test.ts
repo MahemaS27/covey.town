@@ -5,9 +5,10 @@ import { nanoid } from 'nanoid';
 import { AddressInfo } from 'net';
 import * as TestUtils from './TestUtils';
 
-import { UserLocation } from '../CoveyTypes';
+import { MessageType, UserLocation } from '../CoveyTypes';
 import TownsServiceClient from './TownsServiceClient';
 import addTownRoutes from '../router/towns';
+import Player from '../types/Player';
 
 type TestTownData = {
   friendlyName: string, coveyTownID: string,
@@ -76,6 +77,43 @@ describe('TownServiceApiSocket', () => {
     const [movedPlayer, otherMovedPlayer]= await Promise.all([playerMoved, playerMoved2]);
     expect(movedPlayer.location).toMatchObject(newLocation);
     expect(otherMovedPlayer.location).toMatchObject(newLocation);
+  });
+  it('Dispatches town messages to all clients in the same town, including the client who sent the message', async () => {
+    const town = await createTownForTesting();
+    const joinData = await apiClient.joinTown({coveyTownID: town.coveyTownID, userName: nanoid()});
+    const joinData2 = await apiClient.joinTown({coveyTownID: town.coveyTownID, userName: nanoid()});
+    const joinData3 = await apiClient.joinTown({coveyTownID: town.coveyTownID, userName: nanoid()});
+    const {socket, messageReceived} = TestUtils.createSocketClient(server, joinData.coveySessionToken, town.coveyTownID);
+    const {messageReceived: messageReceived2} = TestUtils.createSocketClient(server, joinData2.coveySessionToken, town.coveyTownID);
+    const {messageReceived: messageReceived3} = TestUtils.createSocketClient(server, joinData3.coveySessionToken, town.coveyTownID);
+    const message = TestUtils.createMessageForTesting(MessageType.TownMessage, new Player(nanoid()));
+    socket.emit('messageSent', message);
+    const [firstMessage, secondMessage, thirdMessage] = await Promise.all([messageReceived, messageReceived2, messageReceived3]);
+    expect(firstMessage).toMatchObject(message);
+    expect(secondMessage).toMatchObject(message);
+    expect(thirdMessage).toMatchObject(message);
+  });
+  it('Dispatches proximity messages to all nearby clients in the same town, including the client who sent the message', async () => {
+    const town = await createTownForTesting();
+    const joinData = await apiClient.joinTown({coveyTownID: town.coveyTownID, userName: nanoid()});
+    const joinData2 = await apiClient.joinTown({coveyTownID: town.coveyTownID, userName: nanoid()});
+    const joinData3 = await apiClient.joinTown({coveyTownID: town.coveyTownID, userName: nanoid()});
+    const {socket: movementSocket} = TestUtils.createSocketClient(server, joinData.coveySessionToken, town.coveyTownID);
+    const {socket: messageSocket, messageReceived, playerMoved} = TestUtils.createSocketClient(server, joinData2.coveySessionToken, town.coveyTownID);
+    const {messageReceived: messageReceived2, playerMoved: playerMoved2} = TestUtils.createSocketClient(server, joinData3.coveySessionToken, town.coveyTownID);
+
+    const newLocation: UserLocation = {x: 100, y: 100, moving: true, rotation: 'back'};
+    movementSocket.emit('playerMovement', newLocation); // moves first client out of range for proximity chat
+    await Promise.all([playerMoved, playerMoved2]); // makes sure that other two clients register this movement
+
+    // message will be originating from a mew Player's starting location, which is the same place that the second and third clients are located at
+    const message = TestUtils.createMessageForTesting(MessageType.ProximityMessage, new Player(nanoid())); 
+    messageSocket.emit('messageSent', message);
+    const [firstMessage, secondMessage] = await Promise.all([messageReceived, messageReceived2]); // It should therefore be received by these two clients
+    expect(firstMessage).toMatchObject(message);
+    expect(secondMessage).toMatchObject(message);
+    // sadly no way of checking that the first client will NOT receive the message. However, if you modify this test to try 
+    // and await a messageReceived promise from it, the test will timeout.
   });
   it('Invalidates the user session after disconnection', async () => {
     // This test will timeout if it fails - it will never reach the expectation

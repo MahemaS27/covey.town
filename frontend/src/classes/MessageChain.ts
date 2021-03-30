@@ -14,7 +14,7 @@ export type Message = {
   timestamp: number;
   type: MessageType;
   // null for cases of Proximity and Town Message
-  directMessageId: string | undefined;
+  directMessageId: string | null;
 };
 
 export interface MessageChainHash {

@@ -50,6 +50,7 @@ export function createSocketClient(
     socketConnected: Promise<void>;
     socketDisconnected: Promise<void>;
     playerMoved: Promise<RemoteServerPlayer>;
+    messageReceived: Promise<Message>;
     newPlayerJoined: Promise<RemoteServerPlayer>;
     playerDisconnected: Promise<RemoteServerPlayer>;
   }  {
@@ -74,6 +75,11 @@ export function createSocketClient(
       resolve(player);
     });
   });
+  const messageReceivedPromise = new Promise<Message>(resolve => {
+    socket.on('messageReceived', (message: Message) => {
+      resolve(message);
+    });
+  });
   const newPlayerPromise = new Promise<RemoteServerPlayer>(resolve => {
     socket.on('newPlayer', (player: RemoteServerPlayer) => {
       resolve(player);
@@ -90,6 +96,7 @@ export function createSocketClient(
     socketConnected: connectPromise,
     socketDisconnected: disconnectPromise,
     playerMoved: playerMovedPromise,
+    messageReceived: messageReceivedPromise,
     newPlayerJoined: newPlayerPromise,
     playerDisconnected: playerDisconnectPromise,
   };
@@ -113,7 +120,7 @@ export function createMessageForTesting(type: MessageType, player1: Player): Mes
       messageContent: "Omg I'm a test",
       timestamp,
       type,
-      directMessageId: undefined,
+      directMessageId: null,
     };
   }
   return {
@@ -123,6 +130,6 @@ export function createMessageForTesting(type: MessageType, player1: Player): Mes
     messageContent: "Omg I'm a test",
     timestamp,
     type,
-    directMessageId: undefined,
+    directMessageId: null,
   };
 }

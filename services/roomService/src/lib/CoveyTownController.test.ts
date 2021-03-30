@@ -253,6 +253,17 @@ describe('CoveyTownController', () => {
         testingTown.updatePlayerLocation(player, generateTestLocation());
         expect(mockSocket.emit).toBeCalledWith('playerMoved', player);
       });
+      it('should add a town listener, which should emit "messageReceived" to the socket when a message is received', async () => {
+        TestUtils.setSessionTokenAndTownID(
+          testingTown.coveyTownID,
+          session.sessionToken,
+          mockSocket,
+        );
+        townSubscriptionHandler(mockSocket);
+        const message = TestUtils.createMessageForTesting(MessageType.TownMessage, new Player(nanoid()));
+        testingTown.receiveMessage(message);
+        expect(mockSocket.emit).toBeCalledWith('messageReceived', message);
+      });
       it('should add a town listener, which should emit "playerDisconnect" to the socket when a player disconnects', async () => {
         TestUtils.setSessionTokenAndTownID(
           testingTown.coveyTownID,
@@ -339,6 +350,27 @@ describe('CoveyTownController', () => {
           expect(mockListener.onPlayerMoved).toHaveBeenCalledWith(player);
         } else {
           fail('No playerMovement handler registered');
+        }
+      });
+      it('should forward messageSent events from the socket to subscribed listeners', async () => {
+        TestUtils.setSessionTokenAndTownID(
+          testingTown.coveyTownID,
+          session.sessionToken,
+          mockSocket,
+        );
+        townSubscriptionHandler(mockSocket);
+        const mockListener = mock<CoveyTownListener>();
+        testingTown.addTownListener(mockListener);
+        // find the 'messageSent' event handler for the socket, which should have been registered after the socket was connected
+        const messageSentHandler = mockSocket.on.mock.calls.find(
+          call => call[0] === 'messageSent',
+        );
+        if (messageSentHandler && messageSentHandler[1]) {
+          const testMessage = TestUtils.createMessageForTesting(MessageType.TownMessage, new Player(nanoid()));
+          messageSentHandler[1](testMessage);
+          expect(mockListener.onMessageReceived).toHaveBeenCalledWith(testMessage);
+        } else {
+          fail('No messageSent handler registered');
         }
       });
     });
