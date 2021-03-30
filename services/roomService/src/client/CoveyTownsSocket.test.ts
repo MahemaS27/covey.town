@@ -98,7 +98,7 @@ describe('TownServiceApiSocket', () => {
     const joinData = await apiClient.joinTown({coveyTownID: town.coveyTownID, userName: nanoid()});
     const joinData2 = await apiClient.joinTown({coveyTownID: town.coveyTownID, userName: nanoid()});
     const joinData3 = await apiClient.joinTown({coveyTownID: town.coveyTownID, userName: nanoid()});
-    const {socket: movementSocket, messageReceived: shouldNotResolve} = TestUtils.createSocketClient(server, joinData.coveySessionToken, town.coveyTownID);
+    const {socket: movementSocket} = TestUtils.createSocketClient(server, joinData.coveySessionToken, town.coveyTownID);
     const {socket: messageSocket, messageReceived, playerMoved} = TestUtils.createSocketClient(server, joinData2.coveySessionToken, town.coveyTownID);
     const {messageReceived: messageReceived2, playerMoved: playerMoved2} = TestUtils.createSocketClient(server, joinData3.coveySessionToken, town.coveyTownID);
 
@@ -112,11 +112,8 @@ describe('TownServiceApiSocket', () => {
     const [firstMessage, secondMessage] = await Promise.all([messageReceived, messageReceived2]); // It should therefore be received by these two clients
     expect(firstMessage).toMatchObject(message);
     expect(secondMessage).toMatchObject(message);
-    try {
-      await shouldNotResolve; // but not the first one, which is out of range
-    } catch (e) {
-      expect(e).toBeTruthy
-    }
+    // sadly no way of checking that the first client will NOT receive the message. However, if you modify this test to try 
+    // and await a messageReceived promise from it, the test will timeout.
   });
   it('Invalidates the user session after disconnection', async () => {
     // This test will timeout if it fails - it will never reach the expectation
