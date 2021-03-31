@@ -115,6 +115,19 @@ describe('TownServiceApiSocket', () => {
     // sadly no way of checking that the first client will NOT receive the message. However, if you modify this test to try 
     // and await a messageReceived promise from it, the test will timeout.
   });
+  it('Dispatches direct messages to the specified client in the same town, including the client who sent the message', async () => {
+    const town = await createTownForTesting();
+    const joinData = await apiClient.joinTown({coveyTownID: town.coveyTownID, userName: nanoid()});
+    const joinData2 = await apiClient.joinTown({coveyTownID: town.coveyTownID, userName: nanoid()});
+    const {socket, messageReceived} = TestUtils.createSocketClient(server, joinData2.coveySessionToken, town.coveyTownID);
+
+    const message = TestUtils.createDirectMessageForTesting( joinData2.currentPlayers[0]._id , joinData2.currentPlayers[1]._id );
+    // emit the direct message action from socket
+    socket.emit('messageSent', message);
+    // message should be received by the second player
+    const [receivedMessage] = await Promise.all([messageReceived]);
+    expect(receivedMessage).toMatchObject(message);
+  })
   it('Invalidates the user session after disconnection', async () => {
     // This test will timeout if it fails - it will never reach the expectation
     const town = await createTownForTesting();
