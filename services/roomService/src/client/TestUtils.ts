@@ -53,7 +53,7 @@ export function createSocketClient(
     messageReceived: Promise<Message>;
     newPlayerJoined: Promise<RemoteServerPlayer>;
     playerDisconnected: Promise<RemoteServerPlayer>;
-  }  {
+  } {
   const address = server.address() as AddressInfo;
   const socket = io(`http://localhost:${address.port}`, {
     auth: { token: sessionToken, coveyTownID },
@@ -110,7 +110,11 @@ export function setSessionTokenAndTownID(
   socket.handshake.auth = { token: sessionToken, coveyTownID };
 }
 
-export function createMessageForTesting(type: MessageType, player1: Player, player2?: Player): Message {
+export function createMessageForTesting(
+  type: MessageType,
+  player1: Player,
+  player2?: Player,
+): Message {
   const timestamp = Date.now();
   if (type === MessageType.ProximityMessage) {
     return {
@@ -123,7 +127,7 @@ export function createMessageForTesting(type: MessageType, player1: Player, play
       directMessageId: null,
     };
   }
-  if (type === MessageType.DirectMessage && player2){
+  if (type === MessageType.DirectMessage && player2) {
     return {
       userName: nanoid(),
       userId: player1.id,
@@ -147,13 +151,13 @@ export function createMessageForTesting(type: MessageType, player1: Player, play
 
 export function createDirectMessageForTesting(player1ID: string, player2ID: string): Message {
   const timestamp = Date.now();
-    return {
-      userName: nanoid(),
-      userId: player1ID,
-      location: { x: 1, y: 2, rotation: 'front', moving: false },
-      messageContent: "Omg I'm a test",
-      timestamp,
-      type: MessageType.DirectMessage,
-      directMessageId: `${player1ID}:${player2ID}`,
-    };
+  return {
+    userName: nanoid(),
+    userId: player1ID,
+    location: { x: 1, y: 2, rotation: 'front', moving: false },
+    messageContent: "Omg I'm a test",
+    timestamp,
+    type: MessageType.DirectMessage,
+    directMessageId: `${player1ID}:${player2ID}`,
+  };
 }
