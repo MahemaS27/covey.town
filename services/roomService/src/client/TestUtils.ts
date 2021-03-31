@@ -144,3 +144,16 @@ export function createMessageForTesting(type: MessageType, player1: Player, play
     directMessageId: null,
   };
 }
+
+export function createDirectMessageForTesting(player1ID: string, player2ID: string): Message {
+  const timestamp = Date.now();
+    return {
+      userName: nanoid(),
+      userId: player1ID,
+      location: { x: 1, y: 2, rotation: 'front', moving: false },
+      messageContent: "Omg I'm a test",
+      timestamp,
+      type: MessageType.DirectMessage,
+      directMessageId: `${player1ID}:${player2ID}`,
+    };
+}
