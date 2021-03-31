@@ -1,5 +1,5 @@
 import { Socket } from 'socket.io-client';
-import MessageChain, { Message, MessageChainHash } from './classes/MessageChain';
+import MessageChain, { Message, MessageChainHash, MessageType } from './classes/MessageChain';
 import Player, { UserLocation } from './classes/Player';
 import TownsServiceClient from './classes/TownsServiceClient';
 
@@ -31,6 +31,7 @@ export type CoveyAppState = {
   nearbyPlayers: NearbyPlayers;
   emitMovement: (location: UserLocation) => void;
   emitMessage: (message: Message) => void;
+  resetUnviewedMessages: (messageType: MessageType, directMessageId?: string) => void;
   socket: Socket | null;
   apiClient: TownsServiceClient;
   townMessageChain: MessageChain;
