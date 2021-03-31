@@ -1,9 +1,9 @@
 import { UserLocation } from './Player';
 
 export enum MessageType {
-  DirectMessage,
-  ProximityMessage,
-  TownMessage,
+  DirectMessage = 'DirectMessage',
+  ProximityMessage = 'ProximityMessage',
+  TownMessage  = 'TownMessage',
 }
 
 export type Message = {
