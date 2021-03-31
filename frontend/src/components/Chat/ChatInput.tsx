@@ -23,8 +23,9 @@ export default function ChatInput({ messageType, directMessageId }: ChatInputPro
   const canSendMessage = messageContent && messageContent.length;
 
   // sends the message to the socket
-  const handleSendMessage = useCallback((): void => {
+  const handleSendMessage = useCallback((e): void => {
     // typescript yells at us if we don't ensure that properties on myPlayer exist
+    e.preventDefault();
     if (canSendMessage && myPlayer && myPlayer.location) {
       const messageToSend: Message = {
         userId: myPlayerID,
@@ -74,7 +75,7 @@ export default function ChatInput({ messageType, directMessageId }: ChatInputPro
     e => {
       if (e.keyCode === 13 && !e.shiftKey) {
         e.preventDefault();
-        handleSendMessage();
+        handleSendMessage(e);
       }
     },
     [handleSendMessage],

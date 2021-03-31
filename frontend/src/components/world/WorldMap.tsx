@@ -189,7 +189,7 @@ class CoveyGameScene extends Phaser.Scene {
         !this.lastLocation ||
         this.lastLocation.x !== body.x ||
         this.lastLocation.y !== body.y ||
-        this.lastLocation.rotation !== primaryDirection ||
+        (isMoving && this.lastLocation.rotation !== primaryDirection) ||
         this.lastLocation.moving !== isMoving
       ) {
         if (!this.lastLocation) {
