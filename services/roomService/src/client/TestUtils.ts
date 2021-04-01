@@ -46,14 +46,14 @@ export function createSocketClient(
   sessionToken: string,
   coveyTownID: string,
 ): {
-  socket: Socket;
-  socketConnected: Promise<void>;
-  socketDisconnected: Promise<void>;
-  playerMoved: Promise<RemoteServerPlayer>;
-  messageReceived: Promise<Message>;
-  newPlayerJoined: Promise<RemoteServerPlayer>;
-  playerDisconnected: Promise<RemoteServerPlayer>;
-} {
+    socket: Socket;
+    socketConnected: Promise<void>;
+    socketDisconnected: Promise<void>;
+    playerMoved: Promise<RemoteServerPlayer>;
+    messageReceived: Promise<Message>;
+    newPlayerJoined: Promise<RemoteServerPlayer>;
+    playerDisconnected: Promise<RemoteServerPlayer>;
+  } {
   const address = server.address() as AddressInfo;
   const socket = io(`http://localhost:${address.port}`, {
     auth: { token: sessionToken, coveyTownID },
