@@ -25,7 +25,7 @@ const sampleLocation: UserLocation = {
   moving: false,
 };
 
-function wrappedChatInput(props?: Object) {
+function wrappedChatInput(props = {}) {
   return (
     <ChakraProvider>
       <CoveyAppContext.Provider
