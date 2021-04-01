@@ -209,7 +209,7 @@ export default class CoveyTownController {
   }
 
   /**
-   * Informs the correct listener that a direct message has been sent
+   * Retreives the correct listener for the direct message sent
    * @param directMessageId
    * @returns the listener that is recieving the message being sent
    */
