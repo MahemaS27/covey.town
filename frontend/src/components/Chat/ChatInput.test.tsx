@@ -25,7 +25,7 @@ const sampleLocation: UserLocation = {
   moving: false,
 };
 
-function wrappedChatInput() {
+function wrappedChatInput(props?:Object) {
   return (
     <ChakraProvider>
       <CoveyAppContext.Provider
@@ -46,6 +46,7 @@ function wrappedChatInput() {
           townMessageChain: new MessageChain(),
           proximityMessageChain: new MessageChain(),
           directMessageChains: {},
+          ...props
         }}>
         <ChatInput messageType={MessageType.DirectMessage} directMessageId='123:321' />
       </CoveyAppContext.Provider>
@@ -61,6 +62,13 @@ describe('ChatInput', () => {
   });
   it('renders a textarea and a disabled button', () => {
     const renderData = render(wrappedChatInput());
+    renderData.getByPlaceholderText('Send a message...');
+    const sendButton = renderData.getByText('Send').closest('button');
+    expect(sendButton).toBeTruthy();
+    if (sendButton) expect(sendButton.disabled).toBeTruthy();
+  });
+  it('renders a disabled textarea and a disabled button if isDisabled prop is true', () => {
+    const renderData = render(wrappedChatInput({isDisabled: true}));
     renderData.getByPlaceholderText('Send a message...');
     const sendButton = renderData.getByText('Send').closest('button');
     expect(sendButton).toBeTruthy();

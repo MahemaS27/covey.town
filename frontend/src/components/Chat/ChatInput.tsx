@@ -9,10 +9,15 @@ import './ChatInput.css';
 interface ChatInputProps {
   messageType: MessageType;
   directMessageId: string | null;
+  isDisabled: boolean | undefined,
+}
+
+const defaultProps = {
+  isDisabled: false,
 }
 
 // an input for sending messages from frontend to the socket
-export default function ChatInput({ messageType, directMessageId }: ChatInputProps): JSX.Element {
+function ChatInput({ messageType, directMessageId, isDisabled }: ChatInputProps): JSX.Element {
   const [messageContent, setMessageContent] = useState<string>('');
   const { myPlayerID, emitMessage, players } = useCoveyAppState();
   const myPlayer: Player | undefined = players.find(
@@ -99,6 +104,7 @@ export default function ChatInput({ messageType, directMessageId }: ChatInputPro
             placeholder='Send a message...'
             borderRadius='0'
             className='text-area'
+            disabled={isDisabled}
           />
         </div>
         <div className='button'>
@@ -106,7 +112,7 @@ export default function ChatInput({ messageType, directMessageId }: ChatInputPro
             bg='lightblue'
             borderRadius='0'
             height='100px'
-            disabled={!canSendMessage}
+            disabled={isDisabled || !canSendMessage}
             type='submit'>
             Send
           </Button>
@@ -115,3 +121,6 @@ export default function ChatInput({ messageType, directMessageId }: ChatInputPro
     </form>
   );
 }
+
+ChatInput.defaultProps = defaultProps;
+export default ChatInput;
