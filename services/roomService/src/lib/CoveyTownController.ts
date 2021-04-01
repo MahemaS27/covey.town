@@ -153,10 +153,6 @@ export default class CoveyTownController {
     }
   }
 
-  getPlayerById(id: string) {
-    this._players.find(player => player.id === id);
-  }
-
   /**
    * Subscribe to events from this town. Callers should make sure to
    * unsubscribe when they no longer want those events by calling removeTownListener
