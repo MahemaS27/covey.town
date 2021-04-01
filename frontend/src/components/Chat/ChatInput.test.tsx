@@ -25,7 +25,7 @@ const sampleLocation: UserLocation = {
   moving: false,
 };
 
-function wrappedChatInput(props?:Object) {
+function wrappedChatInput(props?: Object) {
   return (
     <ChakraProvider>
       <CoveyAppContext.Provider
@@ -46,9 +46,13 @@ function wrappedChatInput(props?:Object) {
           townMessageChain: new MessageChain(),
           proximityMessageChain: new MessageChain(),
           directMessageChains: {},
-          ...props
         }}>
-        <ChatInput messageType={MessageType.DirectMessage} directMessageId='123:321' />
+        <ChatInput
+          messageType={MessageType.DirectMessage}
+          directMessageId='123:321'
+          isDisabled={undefined}
+          {...props}
+        />
       </CoveyAppContext.Provider>
     </ChakraProvider>
   );
@@ -62,17 +66,21 @@ describe('ChatInput', () => {
   });
   it('renders a textarea and a disabled button', () => {
     const renderData = render(wrappedChatInput());
-    renderData.getByPlaceholderText('Send a message...');
+    const textArea = renderData.getByPlaceholderText('Send a message...').closest('textarea');
     const sendButton = renderData.getByText('Send').closest('button');
     expect(sendButton).toBeTruthy();
+    expect(textArea).toBeTruthy();
     if (sendButton) expect(sendButton.disabled).toBeTruthy();
+    if (textArea) expect(textArea.disabled).toBeFalsy();
   });
   it('renders a disabled textarea and a disabled button if isDisabled prop is true', () => {
-    const renderData = render(wrappedChatInput({isDisabled: true}));
-    renderData.getByPlaceholderText('Send a message...');
+    const renderData = render(wrappedChatInput({ isDisabled: true }));
+    const textArea = renderData.getByPlaceholderText('Send a message...').closest('textarea');
     const sendButton = renderData.getByText('Send').closest('button');
     expect(sendButton).toBeTruthy();
+    expect(textArea).toBeTruthy();
     if (sendButton) expect(sendButton.disabled).toBeTruthy();
+    if (textArea) expect(textArea.disabled).toBeTruthy();
   });
   it('enables send button when user begins to type', () => {
     const renderData = render(wrappedChatInput());
@@ -97,7 +105,7 @@ describe('ChatInput', () => {
     fireEvent.change(renderData.getByPlaceholderText('Send a message...'), {
       target: { value: 'new value' },
     });
-    fireEvent.submit(renderData.getByTestId("chat-form"));
+    fireEvent.submit(renderData.getByTestId('chat-form'));
     expect(mockEmitMessage).toHaveBeenCalled();
     const textArea = renderData.getByPlaceholderText('Send a message...').closest('textarea');
     if (textArea) expect(textArea.value).toBe('');

@@ -12,10 +12,6 @@ interface ChatInputProps {
   isDisabled: boolean | undefined,
 }
 
-const defaultProps = {
-  isDisabled: false,
-}
-
 // an input for sending messages from frontend to the socket
 function ChatInput({ messageType, directMessageId, isDisabled }: ChatInputProps): JSX.Element {
   const [messageContent, setMessageContent] = useState<string>('');
@@ -122,5 +118,4 @@ function ChatInput({ messageType, directMessageId, isDisabled }: ChatInputProps)
   );
 }
 
-ChatInput.defaultProps = defaultProps;
 export default ChatInput;
