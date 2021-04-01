@@ -175,10 +175,9 @@ describe('CoveyTownController', () => {
       directMockListeners.forEach(listener => testingTown.addTownListener(listener));
 
       // create a direct message between player 1 and player 2
-      const message = TestUtils.createMessageForTesting(
-        MessageType.DirectMessage,
-        player1,
-        player2,
+      const message = TestUtils.createDirectMessageForTesting(
+        player1.id,
+        player2.id
       );
       testingTown.receiveMessage(message);
       // check that player 1 (who sent the message) recieved the message

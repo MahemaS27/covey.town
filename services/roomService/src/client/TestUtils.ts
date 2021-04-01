@@ -113,7 +113,6 @@ export function setSessionTokenAndTownID(
 export function createMessageForTesting(
   type: MessageType,
   player1: Player,
-  player2?: Player,
 ): Message {
   const timestamp = Date.now();
   if (type === MessageType.ProximityMessage) {

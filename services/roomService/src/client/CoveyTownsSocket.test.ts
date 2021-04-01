@@ -202,12 +202,20 @@ describe('TownServiceApiSocket', () => {
   });
   it('Dispatches direct messages to the specified client in the same town, including the client who sent the message', async () => {
     const town = await createTownForTesting();
-    await apiClient.joinTown({ coveyTownID: town.coveyTownID, userName: nanoid() });
+    const joinData = await apiClient.joinTown({
+      coveyTownID: town.coveyTownID,
+      userName: nanoid(),
+    });
     const joinData2 = await apiClient.joinTown({
       coveyTownID: town.coveyTownID,
       userName: nanoid(),
     });
     const { socket, messageReceived } = TestUtils.createSocketClient(
+      server,
+      joinData.coveySessionToken,
+      town.coveyTownID,
+    );
+    const { messageReceived: messageReceived2 } = TestUtils.createSocketClient(
       server,
       joinData2.coveySessionToken,
       town.coveyTownID,
@@ -220,7 +228,8 @@ describe('TownServiceApiSocket', () => {
     // emit the direct message action from socket
     socket.emit('messageSent', message);
     // message should be received by the second player
-    const [receivedMessage] = await Promise.all([messageReceived]);
+    const [sentMessage, receivedMessage] = await Promise.all([messageReceived, messageReceived2]);
+    expect(sentMessage).toMatchObject(message);
     expect(receivedMessage).toMatchObject(message);
   });
   it('Invalidates the user session after disconnection', async () => {
