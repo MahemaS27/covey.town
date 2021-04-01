@@ -42,6 +42,7 @@ function wrappedChatInput(isDisabled = false) {
           currentLocation: sampleLocation,
           emitMovement: () => {},
           emitMessage: mockEmitMessage,
+          resetUnviewedMessages: () => {},
           apiClient: new TownsServiceClient(),
           townMessageChain: new MessageChain(),
           proximityMessageChain: new MessageChain(),
