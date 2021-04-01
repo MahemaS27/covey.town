@@ -117,7 +117,8 @@ export function createMessageForTesting(
   const timestamp = Date.now();
   if (type === MessageType.ProximityMessage) {
     return {
-      userName: nanoid(),
+      fromUserName: nanoid(),
+      toUserName: null,
       userId: player1.id,
       location: player1.location,
       messageContent: "Omg I'm a test",
@@ -127,7 +128,8 @@ export function createMessageForTesting(
     };
   }
   return {
-    userName: nanoid(),
+    fromUserName: nanoid(),
+    toUserName: null,
     userId: player1.id,
     location: { x: 1, y: 2, rotation: 'front', moving: false },
     messageContent: "Omg I'm a test",

@@ -16,7 +16,9 @@ export enum MessageType {
 export type Message = {
   // user who sent the message
   userId: string;
-  userName: string;
+  fromUserName: string;
+  // null for cases of Proximity and Town Message
+  toUserName: string | null;
   location: UserLocation;
   messageContent: string;
   timestamp: number;
