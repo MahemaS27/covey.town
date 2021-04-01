@@ -143,8 +143,8 @@ export default class CoveyTownController {
         break;
       case MessageType.DirectMessage:
         if (message.directMessageId) {
-          const directMessageListener = this.getDirectMessageListener(message.directMessageId);
-          directMessageListener.onMessageReceived(message);
+          const directMessageListeners = this.getDirectMessageListeners(message.directMessageId);
+          directMessageListeners.forEach(listener => listener.onMessageReceived(message));
         }
         break;
       default:
@@ -207,17 +207,17 @@ export default class CoveyTownController {
       nearbyPlayers.includes(listener.getAssociatedPlayer()),
     );
   }
-  
+
   /**
    * Informs the correct listener that a direct message has been sent
    * @param directMessageId
    * @returns the listener that is recieving the message being sent
    */
-  getDirectMessageListener(directMessageId: string): CoveyTownListener {
-    const matchingPlayerID = directMessageId.split(':')[1];
-    const directMessageListener = this._listeners.filter(
-      listener => listener.getAssociatedPlayer().id === matchingPlayerID,
+  getDirectMessageListeners(directMessageId: string): CoveyTownListener[] {
+    const matchingPlayerIDs = directMessageId.split(':');
+    const directMessageListeners = this._listeners.filter(listener =>
+      matchingPlayerIDs.includes(listener.getAssociatedPlayer().id),
     );
-    return directMessageListener[0];
+    return directMessageListeners;
   }
 }

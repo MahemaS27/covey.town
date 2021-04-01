@@ -46,14 +46,14 @@ export function createSocketClient(
   sessionToken: string,
   coveyTownID: string,
 ): {
-    socket: Socket;
-    socketConnected: Promise<void>;
-    socketDisconnected: Promise<void>;
-    playerMoved: Promise<RemoteServerPlayer>;
-    messageReceived: Promise<Message>;
-    newPlayerJoined: Promise<RemoteServerPlayer>;
-    playerDisconnected: Promise<RemoteServerPlayer>;
-  } {
+  socket: Socket;
+  socketConnected: Promise<void>;
+  socketDisconnected: Promise<void>;
+  playerMoved: Promise<RemoteServerPlayer>;
+  messageReceived: Promise<Message>;
+  newPlayerJoined: Promise<RemoteServerPlayer>;
+  playerDisconnected: Promise<RemoteServerPlayer>;
+} {
   const address = server.address() as AddressInfo;
   const socket = io(`http://localhost:${address.port}`, {
     auth: { token: sessionToken, coveyTownID },
@@ -125,17 +125,6 @@ export function createMessageForTesting(
       timestamp,
       type,
       directMessageId: null,
-    };
-  }
-  if (type === MessageType.DirectMessage && player2) {
-    return {
-      userName: nanoid(),
-      userId: player1.id,
-      location: player1.location,
-      messageContent: "Omg I'm a test",
-      timestamp,
-      type,
-      directMessageId: `${player1.id}:${player2.id}`,
     };
   }
   return {

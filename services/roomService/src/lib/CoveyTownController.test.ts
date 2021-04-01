@@ -157,16 +157,19 @@ describe('CoveyTownController', () => {
       expect(proximityMockListeners[0].onMessageReceived).toBeCalledWith(message);
       expect(proximityMockListeners[1].onMessageReceived).not.toBeCalledWith(message);
     });
-    it('should notify the correct listener when a direct message is sent', async () => {
-      const directMockListeners = [mock<CoveyTownListener>(), mock<CoveyTownListener>()];
+    it('should notify the correct listeners when a direct message is sent', async () => {
+      const directMockListeners = [mock<CoveyTownListener>(), mock<CoveyTownListener>(), mock<CoveyTownListener>()];
       // player sending message
       const player1 = new Player('test player 1');
       // player recieiving direct message
       const player2 = new Player('test player 2');
       // player not involved in direct message
       const player3 = new Player('test player 3');
-      directMockListeners[0].getAssociatedPlayer.mockReturnValue(player2);
-      directMockListeners[1].getAssociatedPlayer.mockReturnValue(player3);
+
+      directMockListeners[0].getAssociatedPlayer.mockReturnValue(player1);
+      directMockListeners[1].getAssociatedPlayer.mockReturnValue(player2);
+      directMockListeners[2].getAssociatedPlayer.mockReturnValue(player3)
+      testingTown.addPlayer(player1)
       testingTown.addPlayer(player2);
       testingTown.addPlayer(player3);
       directMockListeners.forEach(listener => testingTown.addTownListener(listener));
@@ -178,11 +181,12 @@ describe('CoveyTownController', () => {
         player2,
       );
       testingTown.receiveMessage(message);
-
-      // check that player 2 recieved the direct message
+      // check that player 1 (who sent the message) recieved the message
       expect(directMockListeners[0].onMessageReceived).toBeCalledWith(message);
+      // check that player 2 recieved the direct message
+      expect(directMockListeners[1].onMessageReceived).toBeCalledWith(message);
       // check that player 3 did not recieive the message
-      expect(directMockListeners[1].onMessageReceived).not.toBeCalledWith(message);
+      expect(directMockListeners[2].onMessageReceived).not.toBeCalledWith(message);
     });
     it('should notify added listeners that the town is destroyed when disconnectAllPlayers is called', async () => {
       const player = new Player('test player');
