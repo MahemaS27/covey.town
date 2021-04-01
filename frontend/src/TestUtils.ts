@@ -15,7 +15,7 @@ export function createMessageForTesting(
   }
   return {
     fromUserName: nanoid(),
-    toUserName: toUserName,
+    toUserName,
     userId: player1Id,
     location: { x: 1, y: 2, rotation: 'front', moving: false },
     messageContent: "Omg I'm a test",

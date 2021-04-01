@@ -6,6 +6,19 @@ export enum MessageType {
   TownMessage = 'TownMessage',
 }
 
+function createParticipants(
+  directMessageId: string,
+  fromId: string,
+  fromUserName: string,
+  toUserName: string,
+): DirectMessageParticipant[] {
+  const participantIds = directMessageId.split(':')
+  const toId = participantIds.filter(id => id !== fromId)[0];
+  const fromParticipant = { userName: fromUserName, userId: fromId };
+  const toParticipant = { userName: toUserName, userId: toId };
+  return [fromParticipant, toParticipant];
+}
+
 export type Message = {
   userId: string;
   fromUserName: string; // matches the user Id
@@ -43,7 +56,7 @@ export default class MessageChain {
     this._isActive = true;
     if (message && message.directMessageId && message.toUserName) {
       this._directMessageId = message.directMessageId;
-      this._participants = this.createParticipants(message.directMessageId, message.userId, message.fromUserName, message.toUserName);
+      this._participants = createParticipants(message.directMessageId, message.userId, message.fromUserName, message.toUserName);
       this._messages.push(message);
       this._numberUnviewed = 1;
     } else {
@@ -94,18 +107,5 @@ export default class MessageChain {
   resetNumberUnviewed(): MessageChain {
     this._numberUnviewed = 0;
     return this;
-  }
-
-  private createParticipants(
-    directMessageId: string,
-    fromId: string,
-    fromUserName: string,
-    toUserName: string,
-  ): DirectMessageParticipant[] {
-    const participantIds = directMessageId.split(':')
-    const toId = participantIds.filter(id => id !== fromId)[0];
-    const fromParticipant = { userName: fromUserName, userId: fromId };
-    const toParticipant = { userName: toUserName, userId: toId };
-    return [fromParticipant, toParticipant];
   }
 }
