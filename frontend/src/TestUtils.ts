@@ -8,11 +8,14 @@ export function createMessageForTesting(
 ): Message {
   const timestamp = Date.now();
   let directMessageID = null;
+  let toUserName = null;
   if (player2Id) {
     directMessageID = `${player1Id}:${player2Id}`;
+    toUserName = nanoid();
   }
   return {
-    userName: nanoid(),
+    fromUserName: nanoid(),
+    toUserName: toUserName,
     userId: player1Id,
     location: { x: 1, y: 2, rotation: 'front', moving: false },
     messageContent: "Omg I'm a test",

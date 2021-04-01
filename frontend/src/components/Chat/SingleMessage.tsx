@@ -8,7 +8,7 @@ interface SingleMessageProps {
   myPlayerID: string;
 }
 export default function SingleMessage({ message, myPlayerID }: SingleMessageProps): JSX.Element {
-  const { userId, userName, messageContent, timestamp } = message;
+  const { userId, fromUserName, messageContent, timestamp } = message;
   const formattedTimestamp = moment(timestamp).calendar();
   const isSentFromUs = userId === myPlayerID;
   const className = isSentFromUs ? 'sent-from-us' : 'sent-from-them';
@@ -19,7 +19,7 @@ export default function SingleMessage({ message, myPlayerID }: SingleMessageProp
       {isSentFromUs && <div data-testid='first-spacer' className='spacer first-spacer' />}
       <div className='message-content'>
         <div className='message-details'>
-          <div className='message-username'>{userName}#{lastFourDigits}</div>
+          <div className='message-username'>{fromUserName}#{lastFourDigits}</div>
           <div className='message-timestamp'>{formattedTimestamp}</div>
         </div>
         {messageContent}
