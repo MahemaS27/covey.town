@@ -1,6 +1,7 @@
 import { Button, Textarea } from '@chakra-ui/react';
 import React, { useCallback, useState } from 'react';
 import { Message, MessageType } from '../../classes/MessageChain';
+import Player from '../../classes/Player';
 import useCoveyAppState from '../../hooks/useCoveyAppState';
 import useMaybeVideo from '../../hooks/useMaybeVideo';
 import './ChatInput.css';
@@ -14,9 +15,21 @@ interface ChatInputProps {
 // an input for sending messages from frontend to the socket
 function ChatInput({ messageType, directMessageId, isDisabled }: ChatInputProps): JSX.Element {
   const [messageContent, setMessageContent] = useState<string>('');
-  const { myPlayerID, emitMessage, currentLocation, userName } = useCoveyAppState();
+  const { myPlayerID, emitMessage, currentLocation, userName, players } = useCoveyAppState();
   const video = useMaybeVideo();
   const canSendMessage = messageContent && messageContent.length;
+
+  let toUserName: string | null = null;
+  if (directMessageId) {
+    const participantIds = directMessageId.split(':')
+    const toId = participantIds.filter(id => id !== myPlayerID)[0];
+    const toPlayer: Player | undefined = players.find(
+      (playerToCheck: Player) => playerToCheck.id === toId,
+    );
+    if (toPlayer) {
+      toUserName = toPlayer.userName;
+    }
+  }
 
   // sends the message to the socket
   const handleSendMessage = useCallback(
@@ -26,7 +39,8 @@ function ChatInput({ messageType, directMessageId, isDisabled }: ChatInputProps)
       if (canSendMessage) {
         const messageToSend: Message = {
           userId: myPlayerID,
-          userName,
+          fromUserName: userName,
+          toUserName,
           timestamp: Date.now(),
           location: currentLocation,
           messageContent,
