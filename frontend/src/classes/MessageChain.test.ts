@@ -46,8 +46,14 @@ describe('MessageChain', () => {
       const player1Id = nanoid();
       const player2Id = nanoid();
       const firstMessage = createMessageForTesting(MessageType.DirectMessage, player1Id, player2Id);
+      firstMessage.fromUserName = 'testFromUser'
+      firstMessage.toUserName = 'testToUser'
       const testChain = createMessageChainForTesting(firstMessage);
       expect(testChain.participants?.length).toBe(2);
+      expect(testChain.participants).toEqual(expect.arrayContaining([
+        expect.objectContaining({ userName: firstMessage.fromUserName, userId: player1Id }),
+        expect.objectContaining({ userName: firstMessage.toUserName, userId: player2Id }),
+      ]))
     });
   });
   describe('addMessage', () => {

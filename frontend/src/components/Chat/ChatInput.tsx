@@ -54,6 +54,7 @@ function ChatInput({ messageType, directMessageId, isDisabled }: ChatInputProps)
     [
       canSendMessage,
       myPlayerID,
+      toUserName,
       directMessageId,
       messageType,
       emitMessage,
