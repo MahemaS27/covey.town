@@ -1,7 +1,6 @@
 import { Button, Textarea } from '@chakra-ui/react';
 import React, { useCallback, useState } from 'react';
 import { Message, MessageType } from '../../classes/MessageChain';
-import Player from '../../classes/Player';
 import useCoveyAppState from '../../hooks/useCoveyAppState';
 import useMaybeVideo from '../../hooks/useMaybeVideo';
 import './ChatInput.css';
@@ -9,47 +8,47 @@ import './ChatInput.css';
 interface ChatInputProps {
   messageType: MessageType;
   directMessageId: string | null;
-  isDisabled: boolean | undefined,
+  isDisabled: boolean | undefined;
 }
 
 // an input for sending messages from frontend to the socket
 function ChatInput({ messageType, directMessageId, isDisabled }: ChatInputProps): JSX.Element {
   const [messageContent, setMessageContent] = useState<string>('');
-  const { myPlayerID, emitMessage, players } = useCoveyAppState();
-  const myPlayer: Player | undefined = players.find(
-    (playerToCheck: Player) => playerToCheck.id === myPlayerID,
-  );
+  const { myPlayerID, emitMessage, currentLocation, userName } = useCoveyAppState();
   const video = useMaybeVideo();
-
   const canSendMessage = messageContent && messageContent.length;
 
   // sends the message to the socket
-  const handleSendMessage = useCallback((e): void => {
-    // typescript yells at us if we don't ensure that properties on myPlayer exist
-    e.preventDefault();
-    if (canSendMessage && myPlayer && myPlayer.location) {
-      const messageToSend: Message = {
-        userId: myPlayerID,
-        userName: myPlayer.userName,
-        timestamp: Date.now(),
-        location: myPlayer.location,
-        messageContent,
-        type: messageType,
-        directMessageId,
-      };
-      emitMessage(messageToSend);
-      setMessageContent('');
-    }
-  }, [
-    canSendMessage,
-    myPlayer,
-    myPlayerID,
-    directMessageId,
-    messageType,
-    emitMessage,
-    messageContent,
-    setMessageContent,
-  ]);
+  const handleSendMessage = useCallback(
+    (e): void => {
+      // typescript yells at us if we don't ensure that properties on myPlayer exist
+      e.preventDefault();
+      if (canSendMessage) {
+        const messageToSend: Message = {
+          userId: myPlayerID,
+          userName,
+          timestamp: Date.now(),
+          location: currentLocation,
+          messageContent,
+          type: messageType,
+          directMessageId,
+        };
+        emitMessage(messageToSend);
+        setMessageContent('');
+      }
+    },
+    [
+      canSendMessage,
+      myPlayerID,
+      directMessageId,
+      messageType,
+      emitMessage,
+      messageContent,
+      setMessageContent,
+      currentLocation,
+      userName,
+    ],
+  );
 
   // updates content to what exists within the textarea
   const handleContentUpdate = useCallback(
