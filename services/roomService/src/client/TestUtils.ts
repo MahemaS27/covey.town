@@ -142,7 +142,8 @@ export function createMessageForTesting(
 export function createDirectMessageForTesting(player1ID: string, player2ID: string): Message {
   const timestamp = Date.now();
   return {
-    userName: nanoid(),
+    fromUserName: nanoid(),
+    toUserName: nanoid(),
     userId: player1ID,
     location: { x: 1, y: 2, rotation: 'front', moving: false },
     messageContent: "Omg I'm a test",
