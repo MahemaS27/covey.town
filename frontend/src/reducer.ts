@@ -19,7 +19,7 @@ export type CoveyAppUpdate =
         players: Player[];
         emitMovement: (location: UserLocation) => void;
         emitMessage: (message: Message) => void;
-        resetUnviewedMessages: (messageType: MessageType, directMessageId?: string) => void;
+        resetUnviewedMessages: (messageType: MessageType, directMessageId: string | null) => void;
       };
     }
   | { action: 'addPlayer'; player: Player }
@@ -28,7 +28,10 @@ export type CoveyAppUpdate =
   | { action: 'weMoved'; location: UserLocation }
   | { action: 'disconnect' }
   | { action: 'messageReceived'; message: Message }
-  | { action: 'resetUnviewedMessages'; messageType: MessageType; directMessageId?: string };
+  | {
+      action: 'resetUnviewedMessages';
+      data: { messageType: MessageType; directMessageId: string | null };
+    };
 
 export function defaultAppState(): CoveyAppState {
   return {
@@ -113,6 +116,7 @@ export function appStateReducer(state: CoveyAppState, update: CoveyAppUpdate): C
       nextState.emitMessage = update.data.emitMessage;
       nextState.socket = update.data.socket;
       nextState.players = update.data.players;
+      nextState.resetUnviewedMessages = update.data.resetUnviewedMessages;
       break;
     case 'addPlayer':
       nextState.players = nextState.players.concat([update.player]);
@@ -167,6 +171,7 @@ export function appStateReducer(state: CoveyAppState, update: CoveyAppUpdate): C
       state.socket?.disconnect();
       return defaultAppState();
     case 'messageReceived':
+      console.log(update);
       switch (update.message.type) {
         case MessageType.TownMessage:
           nextState.townMessageChain.addMessage(update.message);

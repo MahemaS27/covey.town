@@ -201,7 +201,10 @@ describe('reducer', () => {
 
       state = appStateReducer(state, {
         action: 'resetUnviewedMessages',
-        messageType: MessageType.TownMessage,
+        data: {
+          messageType: MessageType.TownMessage,
+          directMessageId: null,
+        },
       });
       expect(state.townMessageChain.numberUnviewed).toBe(0);
       expect(state.proximityMessageChain.numberUnviewed).toBe(1);
@@ -235,7 +238,10 @@ describe('reducer', () => {
 
       state = appStateReducer(state, {
         action: 'resetUnviewedMessages',
-        messageType: MessageType.ProximityMessage,
+        data: {
+          messageType: MessageType.ProximityMessage,
+          directMessageId: null,
+        },
       });
       expect(state.townMessageChain.numberUnviewed).toBe(1);
       expect(state.proximityMessageChain.numberUnviewed).toBe(0);
@@ -250,12 +256,7 @@ describe('reducer', () => {
         player1Id,
         player2Id,
       );
-      const message4ToTest = createMessageForTesting(
-        MessageType.DirectMessage,
-        player1Id,
-        '4321',
-      );
-
+      const message4ToTest = createMessageForTesting(MessageType.DirectMessage, player1Id, '4321');
 
       let state = appStateReducer(createSampleAppState(), {
         action: 'messageReceived',
@@ -274,15 +275,16 @@ describe('reducer', () => {
         message: message4ToTest,
       });
 
-
       expect(state.townMessageChain.numberUnviewed).toBe(1);
       expect(state.proximityMessageChain.numberUnviewed).toBe(1);
       expect(state.directMessageChains[directMessageId].numberUnviewed).toBe(1);
 
       state = appStateReducer(state, {
         action: 'resetUnviewedMessages',
-        messageType: MessageType.DirectMessage,
-        directMessageId,
+        data: {
+          messageType: MessageType.DirectMessage,
+          directMessageId,
+        },
       });
       expect(state.townMessageChain.numberUnviewed).toBe(1);
       expect(state.proximityMessageChain.numberUnviewed).toBe(1);

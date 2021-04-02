@@ -1,5 +1,5 @@
-import React from 'react';
-import MessageChain, { MessageType } from '../../classes/MessageChain';
+import React, { useEffect, useMemo } from 'react';
+import MessageChain, { Message, MessageType } from '../../classes/MessageChain';
 import useCoveyAppState from '../../hooks/useCoveyAppState';
 import './ChatContainer.css';
 import ChatInput from './ChatInput';
@@ -14,6 +14,40 @@ export default function ChatContainer({
   directMessageID,
   chainType,
 }: ChatContainerProps): JSX.Element {
+  const {
+    resetUnviewedMessages,
+    directMessageChains,
+    townMessageChain,
+    proximityMessageChain,
+  } = useCoveyAppState();
+
+  const messageChain = useMemo((): MessageChain | undefined => {
+    switch (chainType) {
+      case MessageType.DirectMessage:
+        if (directMessageID) {
+          return directMessageChains[directMessageID];
+        }
+        return undefined;
+      case MessageType.TownMessage:
+        return townMessageChain;
+      case MessageType.ProximityMessage:
+        return proximityMessageChain;
+      default:
+        return undefined;
+    }
+  }, [chainType, directMessageID, directMessageChains, townMessageChain, proximityMessageChain]);
+
+  const messageChainNumberUnviewed = messageChain ? messageChain.numberUnviewed : 0;
+
+  useEffect(() => {
+    if (messageChainNumberUnviewed) {
+      resetUnviewedMessages(chainType, directMessageID);
+    }
+    const scrollableMessages = document.getElementById('scrollable-messages');
+    if (scrollableMessages) scrollableMessages.scrollTop = scrollableMessages.scrollHeight;
+    return undefined;
+  }, [messageChainNumberUnviewed, chainType, directMessageID]);
+
   // optional passing of an direct message chain ID, depends on chain type
   // if new DM - wait until first input to create the new DM chain -- using the id that was given as a prop
   const { myPlayerID, directMessageChains, townMessageChain, proximityMessageChain, } = useCoveyAppState();
@@ -36,6 +70,7 @@ export default function ChatContainer({
 
   if (!displayedChain) {
     return <div className='chat-container'>
+        <div className='scrollable-messages'/>
       <div className='chat-input'>
         <ChatInput
           messageType={chainType}

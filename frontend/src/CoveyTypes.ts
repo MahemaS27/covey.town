@@ -31,7 +31,7 @@ export type CoveyAppState = {
   nearbyPlayers: NearbyPlayers;
   emitMovement: (location: UserLocation) => void;
   emitMessage: (message: Message) => void;
-  resetUnviewedMessages: (messageType: MessageType, directMessageId?: string) => void;
+  resetUnviewedMessages: (messageType: MessageType, directMessageId: string | null) => void;
   socket: Socket | null;
   apiClient: TownsServiceClient;
   townMessageChain: MessageChain;

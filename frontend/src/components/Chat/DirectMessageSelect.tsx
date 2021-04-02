@@ -1,4 +1,4 @@
-import { Box, Button, Heading, Table, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
+import { Box, Button, Heading, Table, Tag, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import { MessageType } from '../../classes/MessageChain';
 import Player from '../../classes/Player';
@@ -33,6 +33,19 @@ export default function DirectMessageSelect({
     setIsViewingChatContainer(true);
   };
 
+  const renderNotification = (player: Player): JSX.Element | null => {
+    const directMessageId = [player.id, myPlayerID].sort().join(':');
+    const messageChain = directMessageChains[directMessageId];
+    if (!messageChain) {
+      return null;
+    }
+    return (
+      <Tag size='sm' textAlign='center' marginLeft='5px' bg='lightblue'>
+        {messageChain.numberUnviewed}
+      </Tag>
+    );
+  };
+
   if (isViewingChatContainer) {
     return <ChatContainer directMessageID={chosenDirectID} chainType={MessageType.DirectMessage} />;
   }
@@ -54,6 +67,7 @@ export default function DirectMessageSelect({
               <Tr key={player.id}>
                 <Td role='cell'>
                   {player.userName} #{player.id.slice(-4)}
+                  {renderNotification(player)}
                 </Td>
                 <Td role='cell'>
                   <Button onClick={() => handleChat(player.id)}>Continue Chat</Button>

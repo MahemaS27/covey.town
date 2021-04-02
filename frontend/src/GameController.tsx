@@ -50,8 +50,11 @@ export default async function GameController(
     // don't need to update the app with the sent message, the socket will emit messageReceived back to us
     // and we update it then
   };
-  const resetUnviewedMessages = (messageType: MessageType, directMessageId?: string):void => {
-    dispatchAppUpdate({ action: 'resetUnviewedMessages', messageType, directMessageId });
+  const resetUnviewedMessages = (
+    messageType: MessageType,
+    directMessageId: string | null,
+  ): void => {
+    dispatchAppUpdate({ action: 'resetUnviewedMessages', data: {messageType, directMessageId }});
   };
 
   dispatchAppUpdate({
