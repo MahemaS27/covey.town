@@ -10,7 +10,7 @@ export function createMessageForTesting(
   let directMessageID = null;
   let toUserName = null;
   if (player2Id) {
-    directMessageID = `${player1Id}:${player2Id}`;
+    directMessageID = [player1Id, player2Id].sort().join(':');
     toUserName = nanoid();
   }
   return {

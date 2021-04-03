@@ -178,8 +178,8 @@ describe('reducer', () => {
       const message2ToTest = createMessageForTesting(MessageType.ProximityMessage, nanoid());
       const message3ToTest = createMessageForTesting(
         MessageType.DirectMessage,
-        player1Id,
         player2Id,
+        player1Id,
       );
 
       let state = appStateReducer(createSampleAppState(), {
@@ -215,8 +215,8 @@ describe('reducer', () => {
       const message2ToTest = createMessageForTesting(MessageType.ProximityMessage, nanoid());
       const message3ToTest = createMessageForTesting(
         MessageType.DirectMessage,
-        player1Id,
         player2Id,
+        player1Id,
       );
 
       let state = appStateReducer(createSampleAppState(), {
@@ -253,10 +253,10 @@ describe('reducer', () => {
       const message2ToTest = createMessageForTesting(MessageType.ProximityMessage, nanoid());
       const message3ToTest = createMessageForTesting(
         MessageType.DirectMessage,
-        player1Id,
         player2Id,
+        player1Id,
       );
-      const message4ToTest = createMessageForTesting(MessageType.DirectMessage, player1Id, '4321');
+      const message4ToTest = createMessageForTesting(MessageType.DirectMessage, '4321', player1Id);
 
       let state = appStateReducer(createSampleAppState(), {
         action: 'messageReceived',

@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo } from 'react';
-import MessageChain, { Message, MessageType } from '../../classes/MessageChain';
+import React, { useEffect } from 'react';
+import { Message, MessageType } from '../../classes/MessageChain';
 import useCoveyAppState from '../../hooks/useCoveyAppState';
 import './ChatContainer.css';
 import ChatInput from './ChatInput';
@@ -21,7 +21,7 @@ export default function ChatContainer({
     proximityMessageChain,
   } = useCoveyAppState();
 
-  const messageChain = useMemo((): MessageChain | undefined => {
+  const getMessageChain = () => {
     switch (chainType) {
       case MessageType.DirectMessage:
         if (directMessageID) {
@@ -35,10 +35,10 @@ export default function ChatContainer({
       default:
         return undefined;
     }
-  }, [chainType, directMessageID, directMessageChains, townMessageChain, proximityMessageChain]);
+  };
 
+  const messageChain = getMessageChain();
   const messageChainNumberUnviewed = messageChain ? messageChain.numberUnviewed : 0;
-
   useEffect(() => {
     if (messageChainNumberUnviewed) {
       resetUnviewedMessages(chainType, directMessageID);
@@ -46,7 +46,7 @@ export default function ChatContainer({
     const scrollableMessages = document.getElementById('scrollable-messages');
     if (scrollableMessages) scrollableMessages.scrollTop = scrollableMessages.scrollHeight;
     return undefined;
-  }, [messageChainNumberUnviewed, chainType, directMessageID]);
+  }, [messageChainNumberUnviewed, chainType, directMessageID, resetUnviewedMessages]);
 
   // optional passing of an direct message chain ID, depends on chain type
   // if new DM - wait until first input to create the new DM chain -- using the id that was given as a prop

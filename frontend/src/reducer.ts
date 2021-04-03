@@ -171,23 +171,23 @@ export function appStateReducer(state: CoveyAppState, update: CoveyAppUpdate): C
       state.socket?.disconnect();
       return defaultAppState();
     case 'messageReceived':
-      console.log(update);
       switch (update.message.type) {
         case MessageType.TownMessage:
-          nextState.townMessageChain.addMessage(update.message);
+          nextState.townMessageChain.addMessage(update.message, nextState.myPlayerID);
           break;
         case MessageType.ProximityMessage:
-          nextState.proximityMessageChain.addMessage(update.message);
+          nextState.proximityMessageChain.addMessage(update.message, nextState.myPlayerID);
           break;
         default:
           if (update.message.directMessageId) {
             directMessageChainToUpdate =
               nextState.directMessageChains[update.message.directMessageId];
             if (directMessageChainToUpdate) {
-              directMessageChainToUpdate.addMessage(update.message);
+              directMessageChainToUpdate.addMessage(update.message, nextState.myPlayerID);
             } else {
               nextState.directMessageChains[update.message.directMessageId] = new MessageChain(
                 update.message,
+                nextState.myPlayerID,
               );
             }
           }

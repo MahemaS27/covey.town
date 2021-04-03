@@ -30,8 +30,6 @@ import VideoContext from './contexts/VideoContext';
 import GameController from './GameController'
 import { appStateReducer, defaultAppState } from './reducer';
 
-
-
 function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefined>> }) {
   const [appState, dispatchAppUpdate] = useReducer(appStateReducer, defaultAppState());
 
@@ -61,7 +59,7 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
       return <div>Loading...</div>;
     }
     return (
-      <div>
+      <div className="page-container">
         <div className='world-and-overlay-container'>
           <WorldMap />
           <VideoOverlay preferredMode='fullwidth' />

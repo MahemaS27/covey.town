@@ -52,7 +52,7 @@ export default class MessageChain {
   // how many messages have not been viewed by the curret users;
   private _numberUnviewed: number;
 
-  constructor(message?: Message) {
+  constructor(message?: Message, myPlayerId?: string) {
     this._isActive = true;
     if (message && message.directMessageId && message.toUserName) {
       this._directMessageId = message.directMessageId;
@@ -63,7 +63,7 @@ export default class MessageChain {
         message.toUserName,
       );
       this._messages.push(message);
-      this._numberUnviewed = 1;
+      this._numberUnviewed = message.userId !== myPlayerId ? 1 : 0;
     } else {
       this._numberUnviewed = 0;
     }
@@ -97,10 +97,12 @@ export default class MessageChain {
    * Adds new message to this message chain.
    * @param newMessage The new message to add to this chain
    */
-  addMessage(newMessage: Message):MessageChain {
+  addMessage(newMessage: Message, myPlayerId?: string):MessageChain {
     if (this._isActive && !this.isDuplicateMessage(newMessage)) {
       this._messages.push(newMessage);
-      this._numberUnviewed += 1;
+      if (myPlayerId !== newMessage.userId) {
+        this._numberUnviewed += 1;
+      }
     }
     return this;
   }

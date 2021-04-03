@@ -139,7 +139,6 @@ export default class CoveyTownController {
         this._listeners.forEach(listener => listener.onMessageReceived(message));
         break;
       case MessageType.ProximityMessage:
-        console.log(message);
         nearbyListeners = this.calculateNearbyListeners(this._players, message.location);
         nearbyListeners.forEach(listener => listener.onMessageReceived(message));
         break;
