@@ -148,7 +148,8 @@ describe('ChatInput', () => {
         target: { value: 'new value' },
       });
       fireEvent.submit(renderData.getByTestId('chat-form'));
-      expect(mockPlayerArray.find).not.toHaveBeenCalled();
+      // confirms that the "shortcut" of using the participants list is being used, not CoveyAppState.players
+      expect(mockPlayerArray.find).not.toHaveBeenCalled(); 
       expect(mockEmitMessage).toHaveBeenCalledWith({
         userId: '123',
         fromUserName: 'test from',
