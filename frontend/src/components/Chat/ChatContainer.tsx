@@ -4,6 +4,7 @@ import useCoveyAppState from '../../hooks/useCoveyAppState';
 import './ChatContainer.css';
 import ChatInput from './ChatInput';
 import SingleMessage from './SingleMessage';
+
 interface ChatContainerProps {
   directMessageID: string | null;
   chainType: MessageType;
@@ -34,13 +35,21 @@ export default function ChatContainer({
   }
 
   if (!displayedChain) {
-    return <div className='chat-container'></div>;
+    return <div className='chat-container'>
+      <div className='chat-input'>
+        <ChatInput
+          messageType={chainType}
+          directMessageId={directMessageID}
+          isDisabled={undefined}
+        />
+      </div>
+    </div>;
   }
   return (
     <div className='chat-container'>
       <div className='scrollable-messages'>
         {displayedChain.messages.map(message => (
-          <SingleMessage message={message} myPlayerID={myPlayerID} />
+          <SingleMessage key={message.timestamp} message={message} myPlayerID={myPlayerID} />
         ))}
       </div>
       <div className='chat-input'>
