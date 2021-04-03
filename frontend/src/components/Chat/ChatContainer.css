@@ -4,6 +4,7 @@ the height of the viewport */
 
 .scrollable-messages {
   max-height: calc(100vh - 105px - 66px - 42px);
+  min-height: calc(100vh - 105px - 66px - 42px);
   overflow-y: auto;
   padding-bottom: 20px;
 }
