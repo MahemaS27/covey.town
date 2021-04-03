@@ -5,8 +5,8 @@ export function createMessageForTesting(
   type: MessageType,
   player1Id: string,
   player2Id?: string,
+  timestamp?: number,
 ): Message {
-  const timestamp = Date.now();
   let directMessageID = null;
   let toUserName = null;
   if (player2Id) {
@@ -19,7 +19,7 @@ export function createMessageForTesting(
     userId: player1Id,
     location: { x: 1, y: 2, rotation: 'front', moving: false },
     messageContent: "Omg I'm a test",
-    timestamp,
+    timestamp: timestamp || Date.now(),
     type,
     directMessageId: directMessageID,
   };

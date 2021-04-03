@@ -178,11 +178,13 @@ export function appStateReducer(state: CoveyAppState, update: CoveyAppUpdate): C
           if (update.message.directMessageId) {
             directMessageChainToUpdate =
               nextState.directMessageChains[update.message.directMessageId];
-            directMessageChainToUpdate
-              ? directMessageChainToUpdate.addMessage(update.message)
-              : (nextState.directMessageChains[update.message.directMessageId] = new MessageChain(
-                  update.message,
-                ));
+            if (directMessageChainToUpdate) {
+              directMessageChainToUpdate.addMessage(update.message);
+            } else {
+              nextState.directMessageChains[update.message.directMessageId] = new MessageChain(
+                update.message,
+              );
+            }
           }
           break;
       }
