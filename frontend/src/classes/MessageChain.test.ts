@@ -77,5 +77,26 @@ describe('MessageChain', () => {
       testChain.addMessage(secondMessage);
       expect(testChain.messages.length).toBe(1);
     });
+    it('should not allow for duplicate message to be added to MessageChain', () => {
+      const player1Id = nanoid();
+      const firstMessage = createMessageForTesting(MessageType.ProximityMessage, player1Id);
+      const testChain = createMessageChainForTesting(firstMessage);
+      expect(testChain.messages.length).toBe(1);
+      const secondMessage = createMessageForTesting(MessageType.ProximityMessage, player1Id);
+      testChain.addMessage(secondMessage);
+      expect(testChain.messages.length).toBe(2);
+      expect(secondMessage).toBe(testChain.messages[1]);
+      testChain.addMessage(firstMessage);
+      expect(testChain.messages.length).toBe(2);
+      expect(secondMessage).toBe(testChain.messages[1]);
+    });
+    it('should not allow for duplicate message to be added to MessageChain', () => {
+      const player1Id = nanoid();
+      const firstMessage = createMessageForTesting(MessageType.ProximityMessage, player1Id);
+      const testChain = createMessageChainForTesting(firstMessage);
+      expect(testChain.messages.length).toBe(1);
+      testChain.addMessage(firstMessage);
+      expect(testChain.messages.length).toBe(1);
+    });
   });
 });
