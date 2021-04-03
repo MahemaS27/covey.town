@@ -15,19 +15,32 @@ interface ChatInputProps {
 // an input for sending messages from frontend to the socket
 function ChatInput({ messageType, directMessageId, isDisabled }: ChatInputProps): JSX.Element {
   const [messageContent, setMessageContent] = useState<string>('');
-  const { myPlayerID, emitMessage, currentLocation, userName, players } = useCoveyAppState();
+  const {
+    myPlayerID,
+    emitMessage,
+    currentLocation,
+    userName,
+    players,
+    directMessageChains,
+  } = useCoveyAppState();
   const video = useMaybeVideo();
   const canSendMessage = messageContent && messageContent.length;
 
   let toUserName: string | null = null;
   if (directMessageId) {
-    const participantIds = directMessageId.split(':')
-    const toId = participantIds.filter(id => id !== myPlayerID)[0];
-    const toPlayer: Player | undefined = players.find(
-      (playerToCheck: Player) => playerToCheck.id === toId,
-    );
-    if (toPlayer) {
-      toUserName = toPlayer.userName;
+    const directMessageChain = directMessageChains[directMessageId]
+    if (directMessageChain && directMessageChain.participants) {
+      const toParticipant = directMessageChain.participants.filter(participant => participant.userId !== myPlayerID)[0];
+      toUserName = toParticipant.userName;
+    } else {
+      const participantIds = directMessageId.split(':');
+      const toId = participantIds.filter(id => id !== myPlayerID)[0];
+      const toPlayer: Player | undefined = players.find(
+        (playerToCheck: Player) => playerToCheck.id === toId,
+      );
+      if (toPlayer) {
+        toUserName = toPlayer.userName;
+      }
     }
   }
 
