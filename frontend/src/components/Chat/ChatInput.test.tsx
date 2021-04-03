@@ -31,13 +31,13 @@ function wrappedChatInput(isDisabled = false) {
       <CoveyAppContext.Provider
         value={{
           nearbyPlayers: { nearbyPlayers: [] },
-          players: [new Player('123', 'test', sampleLocation)],
+          players: [new Player('123', 'test from', sampleLocation), new Player('321', 'test to', sampleLocation)],
           myPlayerID: '123',
           currentTownID: '',
           currentTownIsPubliclyListed: false,
           currentTownFriendlyName: '',
           sessionToken: '',
-          userName: 'mockName',
+          userName: 'test from',
           socket: null,
           currentLocation: sampleLocation,
           emitMovement: () => {},
@@ -108,7 +108,8 @@ describe('ChatInput', () => {
     fireEvent.submit(renderData.getByTestId('chat-form'));
     expect(mockEmitMessage).toHaveBeenCalledWith({
       userId: '123',
-      userName: 'mockName',
+      fromUserName: 'test from',
+      toUserName: 'test to',
       timestamp: expect.any(Number),
       location: sampleLocation,
       messageContent: 'new value',
@@ -129,7 +130,8 @@ describe('ChatInput', () => {
     });
     expect(mockEmitMessage).toHaveBeenCalledWith({
       userId: '123',
-      userName: 'mockName',
+      fromUserName: 'test from',
+      toUserName: 'test to',
       timestamp: expect.any(Number),
       location: sampleLocation,
       messageContent: 'new value',
