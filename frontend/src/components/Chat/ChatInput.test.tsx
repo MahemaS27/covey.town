@@ -19,8 +19,8 @@ jest.mock('../VideoCall/VideoFrontend/hooks/useVideoContext/useVideoContext.ts',
 }));
 
 const sampleLocation: UserLocation = {
-  x: 0,
-  y: 0,
+  x: 2,
+  y: 3,
   rotation: 'front',
   moving: false,
 };
@@ -37,7 +37,7 @@ function wrappedChatInput(isDisabled = false) {
           currentTownIsPubliclyListed: false,
           currentTownFriendlyName: '',
           sessionToken: '',
-          userName: '',
+          userName: 'mockName',
           socket: null,
           currentLocation: sampleLocation,
           emitMovement: () => {},
@@ -106,7 +106,15 @@ describe('ChatInput', () => {
       target: { value: 'new value' },
     });
     fireEvent.submit(renderData.getByTestId('chat-form'));
-    expect(mockEmitMessage).toHaveBeenCalled();
+    expect(mockEmitMessage).toHaveBeenCalledWith({
+      userId: '123',
+      userName: 'mockName',
+      timestamp: expect.any(Number),
+      location: sampleLocation,
+      messageContent: 'new value',
+      type: MessageType.DirectMessage,
+      directMessageId: '123:321',
+    });
     const textArea = renderData.getByPlaceholderText('Send a message...').closest('textarea');
     if (textArea) expect(textArea.value).toBe('');
   });
@@ -119,7 +127,15 @@ describe('ChatInput', () => {
       key: 'Enter',
       keyCode: 13,
     });
-    expect(mockEmitMessage).toHaveBeenCalled();
+    expect(mockEmitMessage).toHaveBeenCalledWith({
+      userId: '123',
+      userName: 'mockName',
+      timestamp: expect.any(Number),
+      location: sampleLocation,
+      messageContent: 'new value',
+      type: MessageType.DirectMessage,
+      directMessageId: '123:321',
+    });
     const textArea = renderData.getByPlaceholderText('Send a message...').closest('textarea');
     if (textArea) expect(textArea.value).toBe('');
   });
