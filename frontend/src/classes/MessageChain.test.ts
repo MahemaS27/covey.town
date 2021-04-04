@@ -46,14 +46,16 @@ describe('MessageChain', () => {
       const player1Id = nanoid();
       const player2Id = nanoid();
       const firstMessage = createMessageForTesting(MessageType.DirectMessage, player1Id, player2Id);
-      firstMessage.fromUserName = 'testFromUser'
-      firstMessage.toUserName = 'testToUser'
+      firstMessage.fromUserName = 'testFromUser';
+      firstMessage.toUserName = 'testToUser';
       const testChain = createMessageChainForTesting(firstMessage);
       expect(testChain.participants?.length).toBe(2);
-      expect(testChain.participants).toEqual(expect.arrayContaining([
-        expect.objectContaining({ userName: firstMessage.fromUserName, userId: player1Id }),
-        expect.objectContaining({ userName: firstMessage.toUserName, userId: player2Id }),
-      ]))
+      expect(testChain.participants).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ userName: firstMessage.fromUserName, userId: player1Id }),
+          expect.objectContaining({ userName: firstMessage.toUserName, userId: player2Id }),
+        ]),
+      );
     });
   });
   describe('addMessage', () => {
@@ -76,6 +78,59 @@ describe('MessageChain', () => {
       const secondMessage = createMessageForTesting(MessageType.ProximityMessage, player1Id);
       testChain.addMessage(secondMessage);
       expect(testChain.messages.length).toBe(1);
+    });
+    it('should allow for messages sent at same time to be added to MessageChain if each from different player', () => {
+      const player1Id = nanoid();
+      const player2Id = nanoid();
+      const timestamp = Date.now();
+      const firstMessage = createMessageForTesting(
+        MessageType.DirectMessage,
+        player1Id,
+        player2Id,
+        timestamp,
+      );
+      const testChain = createMessageChainForTesting(firstMessage);
+      expect(testChain.messages.length).toBe(1);
+      const secondMessage = createMessageForTesting(
+        MessageType.DirectMessage,
+        player2Id,
+        player1Id,
+        timestamp,
+      );
+      testChain.addMessage(secondMessage);
+      expect(testChain.messages.length).toBe(2);
+    });
+    it('should not allow for duplicate message to be added to MessageChain', () => {
+      const player1Id = nanoid();
+      const firstMessage = createMessageForTesting(MessageType.ProximityMessage, player1Id);
+      const testChain = createMessageChainForTesting(firstMessage);
+      expect(testChain.messages.length).toBe(1);
+      testChain.addMessage(firstMessage);
+      expect(testChain.messages.length).toBe(1);
+    });
+
+    it('should not check for duplicates past older timestamps', () => {
+      const player1Id = nanoid();
+      const player2Id = nanoid();
+      const timestamp = Date.now();
+      const timestampOlder = Date.now() - 1;
+      const firstMessage = createMessageForTesting(
+        MessageType.DirectMessage,
+        player1Id,
+        player2Id,
+        timestamp,
+      );
+      const testChain = createMessageChainForTesting(firstMessage);
+      expect(testChain.messages.length).toBe(1);
+      const secondMessage = createMessageForTesting(
+        MessageType.DirectMessage,
+        player2Id,
+        player1Id,
+        timestampOlder,
+      );
+      testChain.addMessage(secondMessage);
+      testChain.addMessage(firstMessage);
+      expect(testChain.messages.length).toBe(3);
     });
   });
 });

@@ -169,38 +169,34 @@ export function appStateReducer(state: CoveyAppState, update: CoveyAppUpdate): C
     case 'messageReceived':
       switch (update.message.type) {
         case MessageType.TownMessage:
-          nextState.townMessageChain = nextState.townMessageChain.addMessage(update.message);
+          nextState.townMessageChain.addMessage(update.message);
           break;
         case MessageType.ProximityMessage:
-          nextState.proximityMessageChain = nextState.proximityMessageChain.addMessage(
-            update.message,
-          );
+          nextState.proximityMessageChain.addMessage(update.message);
           break;
         default:
           if (update.message.directMessageId) {
             directMessageChainToUpdate =
               nextState.directMessageChains[update.message.directMessageId];
-            nextState.directMessageChains[
-              update.message.directMessageId
-            ] = directMessageChainToUpdate
-              ? directMessageChainToUpdate.addMessage(update.message)
-              : new MessageChain(update.message);
+            if (directMessageChainToUpdate) {
+              directMessageChainToUpdate.addMessage(update.message);
+            } else {
+              nextState.directMessageChains[update.message.directMessageId] = new MessageChain(
+                update.message,
+              );
+            }
           }
           break;
       }
       break;
     case 'resetUnviewedMessages':
       if (update.messageType === MessageType.TownMessage) {
-        nextState.townMessageChain = nextState.townMessageChain.resetNumberUnviewed();
+        nextState.townMessageChain.resetNumberUnviewed();
       } else if (update.messageType === MessageType.ProximityMessage) {
-        nextState.proximityMessageChain = nextState.proximityMessageChain.resetNumberUnviewed();
+        nextState.proximityMessageChain.resetNumberUnviewed();
       } else if (update.directMessageId) {
         directMessageChainToUpdate = nextState.directMessageChains[update.directMessageId];
-        if (directMessageChainToUpdate) {
-          nextState.directMessageChains[
-            update.directMessageId
-          ] = directMessageChainToUpdate.resetNumberUnviewed();
-        }
+        if (directMessageChainToUpdate) directMessageChainToUpdate.resetNumberUnviewed();
       }
       break;
     default:
