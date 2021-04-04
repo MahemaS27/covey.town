@@ -106,7 +106,7 @@ export default class MessageChain {
   }
 
   isDuplicateMessage(newMessage: Message): boolean {
-    for (let i = this._messages.length - 1; i >= 0; i = i - 1) {
+    for (let i = this._messages.length - 1; i >= 0; i -= 1) {
       const messageToCheck = this._messages[i];
       if (messageToCheck.timestamp < newMessage.timestamp) {
         return false;
