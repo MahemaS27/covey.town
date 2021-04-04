@@ -5,7 +5,8 @@ import { Message, MessageType } from '../../classes/MessageChain';
 import SingleMessage from './SingleMessage';
 
 const sampleMessage: Message = {
-  userName: 'sampleName',
+  fromUserName: 'sampleName',
+  toUserName: null,
   userId: '123456',
   timestamp: 1616797320000,
   messageContent:
@@ -24,7 +25,7 @@ describe('SingleMessage', () => {
   it('renders message when message is sent by the player', () => {
     const renderData = render(<SingleMessage message={sampleMessage} myPlayerID='123456' />);
     renderData.getByTestId('sent-from-us');
-    renderData.getByText(`${sampleMessage.userName}#3456`);
+    renderData.getByText(`${sampleMessage.fromUserName}#3456`);
     renderData.getByText(moment(sampleMessage.timestamp).calendar());
     renderData.getByTestId('first-spacer');
     renderData.getByText(sampleMessage.messageContent);
@@ -35,7 +36,7 @@ describe('SingleMessage', () => {
   it('renders message when message is sent by a different player', () => {
     const renderData = render(<SingleMessage message={sampleMessage} myPlayerID='453621' />);
     renderData.getByTestId('sent-from-them');
-    renderData.getByText(`${sampleMessage.userName}#3456`);
+    renderData.getByText(`${sampleMessage.fromUserName}#3456`);
     renderData.getByText(moment(sampleMessage.timestamp).calendar());
     renderData.getByTestId('second-spacer');
     renderData.getByText(sampleMessage.messageContent);

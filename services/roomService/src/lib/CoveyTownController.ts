@@ -135,6 +135,7 @@ export default class CoveyTownController {
     let nearbyListeners;
     switch (message.type) {
       case MessageType.TownMessage:
+        
         this._listeners.forEach(listener => listener.onMessageReceived(message));
         break;
       case MessageType.ProximityMessage:

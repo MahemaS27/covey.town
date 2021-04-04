@@ -1,8 +1,9 @@
 /* eslint-disable no-await-in-loop,@typescript-eslint/no-loop-func,no-restricted-syntax */
 import { ChakraProvider } from '@chakra-ui/react';
 import { fireEvent, render } from '@testing-library/react';
+import { mock } from 'jest-mock-extended';
 import React from 'react';
-import MessageChain, { MessageType } from '../../classes/MessageChain';
+import MessageChain, { Message, MessageType } from '../../classes/MessageChain';
 import Player, { UserLocation } from '../../classes/Player';
 import TownsServiceClient from '../../classes/TownsServiceClient';
 import CoveyAppContext from '../../contexts/CoveyAppContext';
@@ -25,19 +26,24 @@ const sampleLocation: UserLocation = {
   moving: false,
 };
 
-function wrappedChatInput(isDisabled = false) {
+const samplePlayers: Array<Player> = [
+  new Player('123', 'test from', sampleLocation),
+  new Player('321', 'test to', sampleLocation),
+];
+
+function wrappedChatInput(isDisabled = false, directMessageChains = {}, players = samplePlayers) {
   return (
     <ChakraProvider>
       <CoveyAppContext.Provider
         value={{
           nearbyPlayers: { nearbyPlayers: [] },
-          players: [new Player('123', 'test', sampleLocation)],
+          players,
           myPlayerID: '123',
           currentTownID: '',
           currentTownIsPubliclyListed: false,
           currentTownFriendlyName: '',
           sessionToken: '',
-          userName: 'mockName',
+          userName: 'test from',
           socket: null,
           currentLocation: sampleLocation,
           emitMovement: () => {},
@@ -46,7 +52,7 @@ function wrappedChatInput(isDisabled = false) {
           apiClient: new TownsServiceClient(),
           townMessageChain: new MessageChain(),
           proximityMessageChain: new MessageChain(),
-          directMessageChains: {},
+          directMessageChains,
         }}>
         <ChatInput
           messageType={MessageType.DirectMessage}
@@ -100,7 +106,7 @@ describe('ChatInput', () => {
     expect(sendButton).toBeTruthy();
     if (sendButton) expect(sendButton.disabled).toBeFalsy();
   });
-  it('sends a message on submit', () => {
+  it('sends a message on submit when no chain has started yet', () => {
     const renderData = render(wrappedChatInput());
     fireEvent.change(renderData.getByPlaceholderText('Send a message...'), {
       target: { value: 'new value' },
@@ -108,7 +114,8 @@ describe('ChatInput', () => {
     fireEvent.submit(renderData.getByTestId('chat-form'));
     expect(mockEmitMessage).toHaveBeenCalledWith({
       userId: '123',
-      userName: 'mockName',
+      fromUserName: 'test from',
+      toUserName: 'test to',
       timestamp: expect.any(Number),
       location: sampleLocation,
       messageContent: 'new value',
@@ -118,6 +125,47 @@ describe('ChatInput', () => {
     const textArea = renderData.getByPlaceholderText('Send a message...').closest('textarea');
     if (textArea) expect(textArea.value).toBe('');
   });
+
+  describe('when a message chain has started', () => {
+    const mockPlayerArray = mock<Array<Player>>();
+    const startingMessage: Message = {
+      fromUserName: 'test from',
+      toUserName: 'test to',
+      userId: '123',
+      location: { x: 1, y: 2, rotation: 'front', moving: false },
+      messageContent: "Omg I'm a test",
+      timestamp: Date.now(),
+      type: MessageType.DirectMessage,
+      directMessageId: '123:321',
+    };
+    const messageChain = new MessageChain(startingMessage);
+
+    it('sends a message on submit without checking the list of players', () => {
+      const renderData = render(
+        wrappedChatInput(false, { '123:321': messageChain }, mockPlayerArray),
+      );
+      fireEvent.change(renderData.getByPlaceholderText('Send a message...'), {
+        target: { value: 'new value' },
+      });
+      fireEvent.submit(renderData.getByTestId('chat-form'));
+      // confirms that the "shortcut" of using the participants list is being used, not CoveyAppState.players
+      expect(mockPlayerArray.find).not.toHaveBeenCalled(); 
+      expect(mockEmitMessage).toHaveBeenCalledWith({
+        userId: '123',
+        fromUserName: 'test from',
+        toUserName: 'test to',
+        timestamp: expect.any(Number),
+        location: sampleLocation,
+        messageContent: 'new value',
+        type: MessageType.DirectMessage,
+        directMessageId: '123:321',
+      });
+
+      const textArea = renderData.getByPlaceholderText('Send a message...').closest('textarea');
+      if (textArea) expect(textArea.value).toBe('');
+    });
+  });
+
   it('sends a message on enter', () => {
     const renderData = render(wrappedChatInput());
     fireEvent.change(renderData.getByPlaceholderText('Send a message...'), {
@@ -129,7 +177,8 @@ describe('ChatInput', () => {
     });
     expect(mockEmitMessage).toHaveBeenCalledWith({
       userId: '123',
-      userName: 'mockName',
+      fromUserName: 'test from',
+      toUserName: 'test to',
       timestamp: expect.any(Number),
       location: sampleLocation,
       messageContent: 'new value',

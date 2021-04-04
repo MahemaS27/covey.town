@@ -6,7 +6,8 @@ import SingleMessage from './SingleMessage';
 
 // delete when real messages exist
 const sampleMessage: Message = {
-  userName: 'sampleName',
+  fromUserName: 'sampleName',
+  toUserName: null,
   userId: '33333',
   timestamp: Date.now(),
   messageContent:
