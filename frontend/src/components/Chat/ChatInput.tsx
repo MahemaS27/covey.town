@@ -28,9 +28,11 @@ function ChatInput({ messageType, directMessageId, isDisabled }: ChatInputProps)
 
   let toUserName: string | null = null;
   if (directMessageId) {
-    const directMessageChain = directMessageChains[directMessageId]
+    const directMessageChain = directMessageChains[directMessageId];
     if (directMessageChain && directMessageChain.participants) {
-      const toParticipant = directMessageChain.participants.filter(participant => participant.userId !== myPlayerID)[0];
+      const toParticipant = directMessageChain.participants.filter(
+        participant => participant.userId !== myPlayerID,
+      )[0];
       toUserName = toParticipant.userName;
     } else {
       const participantIds = directMessageId.split(':');

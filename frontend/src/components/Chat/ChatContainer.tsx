@@ -45,15 +45,17 @@ export default function ChatContainer({
     if (messageChainNumberUnviewed) {
       resetUnviewedMessages(chainType, directMessageID);
     }
+  }, [messageChainNumberUnviewed, chainType, directMessageID, resetUnviewedMessages]);
+
+  setTimeout(() => {
     const scrollableMessages = document.getElementById('scrollable-messages');
     if (scrollableMessages) scrollableMessages.scrollTop = scrollableMessages.scrollHeight;
-    return undefined;
-  }, [messageChainNumberUnviewed, chainType, directMessageID, resetUnviewedMessages]);
+  }, 50);
 
   if (!messageChain) {
     return (
       <div className='chat-container'>
-        <div id="scrollable-messages" className='scrollable-messages' />
+        <div id='scrollable-messages' className='scrollable-messages' />
         <div className='chat-input'>
           <ChatInput
             messageType={chainType}
