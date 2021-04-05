@@ -18,8 +18,14 @@ export default function ChatSidebar(): JSX.Element {
     0,
   );
 
-  const onTownChatSelect = useCallback(() => setChatName('Town Chat'), [setChatName]);
-  const onProximityChatSelect = useCallback(() => setChatName('Proximity Chat'), [setChatName]);
+  const onTownChatSelect = useCallback(() => {
+    setChatName('Town Chat');
+    setIsViewingDirectChatContainer(false);
+  }, [setChatName]);
+  const onProximityChatSelect = useCallback(() => {
+    setChatName('Proximity Chat');
+    setIsViewingDirectChatContainer(false);
+  }, [setChatName]);
   const onDirectChatSelect = useCallback(() => setChatName('Direct Chats'), [setChatName]);
   const onDirectChatOpen = useCallback(userName => setChatName(`Direct Chat with ${userName}`), [
     setChatName,
@@ -116,7 +122,8 @@ export default function ChatSidebar(): JSX.Element {
     () => (
       <div className='sidebar-content' data-testid='sidebar-content'>
         <div className='sidebar-header' data-testid='sidebar-header'>
-          {collapseExpandButton}<Tooltip label={chatName}>{` ${chatName}`}</Tooltip>
+          {collapseExpandButton}
+          <Tooltip label={chatName}>{` ${chatName}`}</Tooltip>
         </div>
         <Tabs isLazy isFitted variant='enclosed' defaultIndex={0} size='md'>
           <TabList>
