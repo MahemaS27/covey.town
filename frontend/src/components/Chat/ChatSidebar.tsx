@@ -1,4 +1,4 @@
-import { Button, Tab, TabList, TabPanel, TabPanels, Tabs, Tag } from '@chakra-ui/react';
+import { Button, Tab, TabList, TabPanel, TabPanels, Tabs, Tag, Tooltip } from '@chakra-ui/react';
 import React, { useCallback, useMemo, useState } from 'react';
 import { MessageType } from '../../classes/MessageChain';
 import useCoveyAppState from '../../hooks/useCoveyAppState';
@@ -116,7 +116,7 @@ export default function ChatSidebar(): JSX.Element {
     () => (
       <div className='sidebar-content' data-testid='sidebar-content'>
         <div className='sidebar-header' data-testid='sidebar-header'>
-          {collapseExpandButton} {chatName}
+          {collapseExpandButton}<Tooltip label={chatName}>{` ${chatName}`}</Tooltip>
         </div>
         <Tabs isLazy isFitted variant='enclosed' defaultIndex={0} size='md'>
           <TabList>

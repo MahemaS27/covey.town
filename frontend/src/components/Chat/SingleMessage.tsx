@@ -1,3 +1,4 @@
+import { Tooltip } from '@chakra-ui/react';
 import moment from 'moment';
 import React from 'react';
 import { Message } from '../../classes/MessageChain';
@@ -13,13 +14,16 @@ export default function SingleMessage({ message, myPlayerID }: SingleMessageProp
   const isSentFromUs = userId === myPlayerID;
   const className = isSentFromUs ? 'sent-from-us' : 'sent-from-them';
   const lastFourDigits = userId.slice(-4);
+  const userNameToRender = `${fromUserName}#${lastFourDigits}`;
 
   return (
     <div data-testid={className} className={`message-container ${className}`}>
       {isSentFromUs && <div data-testid='first-spacer' className='spacer first-spacer' />}
       <div className='message-content'>
         <div className='message-details'>
-          <div className='message-username'>{fromUserName}#{lastFourDigits}</div>
+          <div className='message-username'>
+            <Tooltip label={userNameToRender}>{userNameToRender}</Tooltip>
+          </div>
           <div className='message-timestamp'>{formattedTimestamp}</div>
         </div>
         {messageContent}

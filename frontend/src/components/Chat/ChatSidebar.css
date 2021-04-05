@@ -12,20 +12,26 @@
 }
 
 .chat-sidebar.collapsed {
-  max-width: 126px;
+  max-width: 160px;
   min-width: 0px;
   position: fixed;
   top: 10px;
   right: 30px;
   border: none;
   background: none;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .chat-sidebar .sidebar-header {
   padding: 15px;
   background: #ddd;
+  overflow: hidden;
   border-bottom: 1px solid lightgray;
   font-size: 1.3rem;
+  width: 500px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .chat-sidebar .back-arrow {

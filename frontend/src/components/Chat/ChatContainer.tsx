@@ -51,20 +51,22 @@ export default function ChatContainer({
   }, [messageChainNumberUnviewed, chainType, directMessageID, resetUnviewedMessages]);
 
   if (!messageChain) {
-    return <div className='chat-container'>
-        <div className='scrollable-messages'/>
-      <div className='chat-input'>
-        <ChatInput
-          messageType={chainType}
-          directMessageId={directMessageID}
-          isDisabled={undefined}
-        />
+    return (
+      <div className='chat-container'>
+        <div id="scrollable-messages" className='scrollable-messages' />
+        <div className='chat-input'>
+          <ChatInput
+            messageType={chainType}
+            directMessageId={directMessageID}
+            isDisabled={undefined}
+          />
+        </div>
       </div>
-    </div>;
+    );
   }
   return (
     <div className='chat-container'>
-      <div className='scrollable-messages'>
+      <div id='scrollable-messages' className='scrollable-messages'>
         {messageChain.messages.map(message => (
           <SingleMessage key={message.timestamp} message={message} myPlayerID={myPlayerID} />
         ))}
