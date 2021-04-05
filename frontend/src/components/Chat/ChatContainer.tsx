@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Message, MessageType } from '../../classes/MessageChain';
+import { MessageType } from '../../classes/MessageChain';
 import useCoveyAppState from '../../hooks/useCoveyAppState';
 import './ChatContainer.css';
 import ChatInput from './ChatInput';
@@ -19,6 +19,7 @@ export default function ChatContainer({
     directMessageChains,
     townMessageChain,
     proximityMessageChain,
+    myPlayerID,
   } = useCoveyAppState();
 
   const getMessageChain = () => {
@@ -39,6 +40,7 @@ export default function ChatContainer({
 
   const messageChain = getMessageChain();
   const messageChainNumberUnviewed = messageChain ? messageChain.numberUnviewed : 0;
+
   useEffect(() => {
     if (messageChainNumberUnviewed) {
       resetUnviewedMessages(chainType, directMessageID);
@@ -48,27 +50,7 @@ export default function ChatContainer({
     return undefined;
   }, [messageChainNumberUnviewed, chainType, directMessageID, resetUnviewedMessages]);
 
-  // optional passing of an direct message chain ID, depends on chain type
-  // if new DM - wait until first input to create the new DM chain -- using the id that was given as a prop
-  const { myPlayerID, directMessageChains, townMessageChain, proximityMessageChain, } = useCoveyAppState();
-  let displayedChain: MessageChain | undefined;
-  switch (chainType) {
-    case 'DirectMessage': {
-      if (directMessageID) {
-        displayedChain = directMessageChains[directMessageID];
-      }
-      break;
-    }
-    case 'TownMessage': {
-      displayedChain = townMessageChain;
-      break;
-    }
-    default: {
-      displayedChain = proximityMessageChain;
-    }
-  }
-
-  if (!displayedChain) {
+  if (!messageChain) {
     return <div className='chat-container'>
         <div className='scrollable-messages'/>
       <div className='chat-input'>
@@ -83,7 +65,7 @@ export default function ChatContainer({
   return (
     <div className='chat-container'>
       <div className='scrollable-messages'>
-        {displayedChain.messages.map(message => (
+        {messageChain.messages.map(message => (
           <SingleMessage key={message.timestamp} message={message} myPlayerID={myPlayerID} />
         ))}
       </div>

@@ -118,7 +118,7 @@ export default function ChatSidebar(): JSX.Element {
         <div className='sidebar-header' data-testid='sidebar-header'>
           {collapseExpandButton} {chatName}
         </div>
-        <Tabs isLazy isFitted variant='enclosed' defaultIndex={0} size='md'>
+        <Tabs isLazy isFitted variant='enclosed' defaultIndex={0} size='md' id='chat-tab-1'>
           <TabList>
             <Tab
               data-testid='direct-chat-tab'
@@ -127,11 +127,11 @@ export default function ChatSidebar(): JSX.Element {
               {directMessageTab}
               {directMessageNotifs}
             </Tab>
-            <Tab data-testid='town-chat-tab' onClick={onTownChatSelect}>
+            <Tab data-testid='town-chat-tab' onClick={onTownChatSelect} id='chat-tab-2'>
               Town Chat
               {townMessageNotifs}
             </Tab>
-            <Tab data-testid='proximity-chat-tab' onClick={onProximityChatSelect}>
+            <Tab data-testid='proximity-chat-tab' onClick={onProximityChatSelect} id='chat-tab-3'>
               Proximity Chat
               {proximityMessageNotifs}
             </Tab>

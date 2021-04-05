@@ -27,8 +27,14 @@ import WorldMap from './components/world/WorldMap';
 import CoveyAppContext from './contexts/CoveyAppContext';
 import NearbyPlayersContext from './contexts/NearbyPlayersContext';
 import VideoContext from './contexts/VideoContext';
-import GameController from './GameController'
+import GameController from './GameController';
 import { appStateReducer, defaultAppState } from './reducer';
+
+// will remove focus from chat input or tabs and re-enable the game;
+const removeFocusFromInputOrTabs = () => {
+  const tabsOrInput = document.activeElement;
+  if (tabsOrInput && tabsOrInput instanceof HTMLElement) tabsOrInput.blur();
+};
 
 function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefined>> }) {
   const [appState, dispatchAppUpdate] = useReducer(appStateReducer, defaultAppState());
@@ -59,8 +65,12 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
       return <div>Loading...</div>;
     }
     return (
-      <div className="page-container">
-        <div className='world-and-overlay-container'>
+      <div className='page-container'>
+        <div
+          onMouseEnter={removeFocusFromInputOrTabs}
+          onFocus={removeFocusFromInputOrTabs}
+          className='world-and-overlay-container'
+          id='world-and-overlay-container'>
           <WorldMap />
           <VideoOverlay preferredMode='fullwidth' />
         </div>

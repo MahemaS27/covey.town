@@ -195,12 +195,12 @@ export function appStateReducer(state: CoveyAppState, update: CoveyAppUpdate): C
       }
       break;
     case 'resetUnviewedMessages':
-      if (update.messageType === MessageType.TownMessage) {
+      if (update.data.messageType === MessageType.TownMessage) {
         nextState.townMessageChain.resetNumberUnviewed();
-      } else if (update.messageType === MessageType.ProximityMessage) {
+      } else if (update.data.messageType === MessageType.ProximityMessage) {
         nextState.proximityMessageChain.resetNumberUnviewed();
-      } else if (update.directMessageId) {
-        directMessageChainToUpdate = nextState.directMessageChains[update.directMessageId];
+      } else if (update.data.directMessageId) {
+        directMessageChainToUpdate = nextState.directMessageChains[update.data.directMessageId];
         if (directMessageChainToUpdate) directMessageChainToUpdate.resetNumberUnviewed();
       }
       break;

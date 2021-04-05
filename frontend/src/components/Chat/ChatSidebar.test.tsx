@@ -120,25 +120,47 @@ describe('ChatSidebar', () => {
     it('properly renders when number unviewed counts are greater than 0', () => {
       const townMessageChain = new MessageChain();
       const townMessageForTesting = createMessageForTesting(MessageType.TownMessage, '123');
+      const townMessageForTesting2 = createMessageForTesting(MessageType.TownMessage, '123');
+
       townMessageChain.addMessage(townMessageForTesting);
-      townMessageChain.addMessage(townMessageForTesting);
+      townMessageChain.addMessage(townMessageForTesting2);
+
       const proximityMessageChain = new MessageChain();
       const proximityMessageForTesting = createMessageForTesting(
         MessageType.ProximityMessage,
         '123',
       );
+      const proximityMessageForTesting2 = createMessageForTesting(
+        MessageType.ProximityMessage,
+        '123',
+      );
+      const proximityMessageForTesting3 = createMessageForTesting(
+        MessageType.ProximityMessage,
+        '123',
+      );
       proximityMessageChain.addMessage(proximityMessageForTesting);
-      proximityMessageChain.addMessage(proximityMessageForTesting);
-      proximityMessageChain.addMessage(proximityMessageForTesting);
+      proximityMessageChain.addMessage(proximityMessageForTesting2);
+      proximityMessageChain.addMessage(proximityMessageForTesting3);
+      
       const directMessageChain = new MessageChain();
       const directMessageForTesting = createMessageForTesting(
         MessageType.DirectMessage,
         '123',
         '231',
       );
+      const directMessageForTesting2 = createMessageForTesting(
+        MessageType.DirectMessage,
+        '123',
+        '231',
+      );
+      const directMessageForTesting3 = createMessageForTesting(
+        MessageType.DirectMessage,
+        '123',
+        '231',
+      );
       directMessageChain.addMessage(directMessageForTesting);
-      directMessageChain.addMessage(directMessageForTesting);
-      directMessageChain.addMessage(directMessageForTesting);
+      directMessageChain.addMessage(directMessageForTesting2);
+      directMessageChain.addMessage(directMessageForTesting3);
       const renderData = render(
         wrappedChatSidebar(townMessageChain, proximityMessageChain, {
           '123:321': directMessageChain,
