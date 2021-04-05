@@ -69,8 +69,7 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
         <div
           onMouseEnter={removeFocusFromInputOrTabs}
           onFocus={removeFocusFromInputOrTabs}
-          className='world-and-overlay-container'
-          id='world-and-overlay-container'>
+          className='world-and-overlay-container'>
           <WorldMap />
           <VideoOverlay preferredMode='fullwidth' />
         </div>
