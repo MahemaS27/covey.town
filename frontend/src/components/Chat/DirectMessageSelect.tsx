@@ -1,7 +1,6 @@
 import { Box, Button, Heading, Table, Tag, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
 import React, { useState } from 'react';
-import { MessageType } from '../../classes/MessageChain';
-import Player from '../../classes/Player';
+import { DirectMessageParticipant, MessageType } from '../../classes/MessageChain';
 import useCoveyAppState from '../../hooks/useCoveyAppState';
 import ChatContainer from './ChatContainer';
 
@@ -17,17 +16,20 @@ export default function DirectMessageSelect({
 }: DirectMessageSelectProps): JSX.Element {
   const { myPlayerID, players, directMessageChains } = useCoveyAppState();
   const [chosenDirectID, setDirectID] = useState<string>('');
-  const playersWithChats: Player[] = [];
-  const playersWithoutChats: Player[] = [];
-
-  players.forEach(player => {
-    const directMessageId = [myPlayerID, player.id].sort().join(':');
-    if (directMessageChains[directMessageId]) {
-      playersWithChats.push(player);
-    } else if (player.id !== myPlayerID) {
-      playersWithoutChats.push(player);
+  
+  const chattedWithPlayers: String[] = [];
+  const playersWithChats: DirectMessageParticipant[] = [];
+  for (let key in directMessageChains) {
+    let value = directMessageChains[key];
+    if (value.participants) {
+      const otherPlayer = value.participants.filter((participant) => participant.userId !== myPlayerID)[0];
+      playersWithChats.push(otherPlayer);
+      chattedWithPlayers.push(otherPlayer.userId);
     }
-  });
+  }
+
+  const playersWithoutChats = players.filter((playerToCheck) => !chattedWithPlayers.includes(playerToCheck.id));
+
 
   const handleChat = async (otherPlayerID: string, userName: string) => {
     const directMessageId = [myPlayerID, otherPlayerID].sort().join(':');
@@ -36,8 +38,8 @@ export default function DirectMessageSelect({
     onDirectChatOpen(userName);
   };
 
-  const renderNotification = (player: Player): JSX.Element | null => {
-    const directMessageId = [player.id, myPlayerID].sort().join(':');
+  const renderNotification = (participant: DirectMessageParticipant): JSX.Element | null => {
+    const directMessageId = [participant.userId, myPlayerID].sort().join(':');
     const messageChain = directMessageChains[directMessageId];
     if (!messageChain) {
       return null;
@@ -69,16 +71,16 @@ export default function DirectMessageSelect({
             </Tr>
           </Thead>
           <Tbody>
-            {playersWithChats.map(player => (
-              <Tr key={player.id}>
+            {playersWithChats.map(participant => (
+              <Tr key={participant.userId}>
                 <Td role='cell'>
-                  {player.userName}#{player.id.slice(-4)}
-                  {renderNotification(player)}
+                  {participant.userName}#{participant.userId.slice(-4)}
+                  {renderNotification(participant)}
                 </Td>
                 <Td role='cell'>
                   <Button
                     onClick={() =>
-                      handleChat(player.id, `${player.userName}#${player.id.slice(-4)}`)
+                      handleChat(participant.userName, `${participant.userName}#${participant.userId.slice(-4)}`)
                     }>
                     Continue Chat
                   </Button>
