@@ -1,5 +1,5 @@
-import React from 'react';
-import MessageChain, { MessageType } from '../../classes/MessageChain';
+import React, { useEffect } from 'react';
+import { MessageType } from '../../classes/MessageChain';
 import useCoveyAppState from '../../hooks/useCoveyAppState';
 import './ChatContainer.css';
 import ChatInput from './ChatInput';
@@ -14,41 +14,62 @@ export default function ChatContainer({
   directMessageID,
   chainType,
 }: ChatContainerProps): JSX.Element {
-  // optional passing of an direct message chain ID, depends on chain type
-  // if new DM - wait until first input to create the new DM chain -- using the id that was given as a prop
-  const { myPlayerID, directMessageChains, townMessageChain, proximityMessageChain, } = useCoveyAppState();
-  let displayedChain: MessageChain | undefined;
-  switch (chainType) {
-    case 'DirectMessage': {
-      if (directMessageID) {
-        displayedChain = directMessageChains[directMessageID];
-      }
-      break;
-    }
-    case 'TownMessage': {
-      displayedChain = townMessageChain;
-      break;
-    }
-    default: {
-      displayedChain = proximityMessageChain;
-    }
-  }
+  const {
+    resetUnviewedMessages,
+    directMessageChains,
+    townMessageChain,
+    proximityMessageChain,
+    myPlayerID,
+  } = useCoveyAppState();
 
-  if (!displayedChain) {
-    return <div className='chat-container'>
-      <div className='chat-input'>
-        <ChatInput
-          messageType={chainType}
-          directMessageId={directMessageID}
-          isDisabled={undefined}
-        />
+  const getMessageChain = () => {
+    switch (chainType) {
+      case MessageType.DirectMessage:
+        if (directMessageID) {
+          return directMessageChains[directMessageID];
+        }
+        return undefined;
+      case MessageType.TownMessage:
+        return townMessageChain;
+      case MessageType.ProximityMessage:
+        return proximityMessageChain;
+      default:
+        return undefined;
+    }
+  };
+
+  const messageChain = getMessageChain();
+  const messageChainNumberUnviewed = messageChain ? messageChain.numberUnviewed : 0;
+
+  useEffect(() => {
+    if (messageChainNumberUnviewed) {
+      resetUnviewedMessages(chainType, directMessageID);
+    }
+  }, [messageChainNumberUnviewed, chainType, directMessageID, resetUnviewedMessages]);
+
+  setTimeout(() => {
+    const scrollableMessages = document.getElementById('scrollable-messages');
+    if (scrollableMessages) scrollableMessages.scrollTop = scrollableMessages.scrollHeight;
+  }, 50);
+
+  if (!messageChain) {
+    return (
+      <div className='chat-container'>
+        <div id='scrollable-messages' className='scrollable-messages' />
+        <div className='chat-input'>
+          <ChatInput
+            messageType={chainType}
+            directMessageId={directMessageID}
+            isDisabled={undefined}
+          />
+        </div>
       </div>
-    </div>;
+    );
   }
   return (
     <div className='chat-container'>
-      <div className='scrollable-messages'>
-        {displayedChain.messages.map(message => (
+      <div id='scrollable-messages' className='scrollable-messages'>
+        {messageChain.messages.map(message => (
           <SingleMessage key={message.timestamp} message={message} myPlayerID={myPlayerID} />
         ))}
       </div>

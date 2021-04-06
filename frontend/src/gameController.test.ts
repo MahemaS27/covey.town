@@ -92,8 +92,10 @@ describe('game controller', () => {
     resetUnviewedMessages(MessageType.DirectMessage, '123:234');
     expect(dispatchAppUpdate).toBeCalledWith({
       action: 'resetUnviewedMessages',
-      messageType: MessageType.DirectMessage,
-      directMessageId: '123:234',
+      data: {
+        messageType: MessageType.DirectMessage,
+        directMessageId: '123:234',
+      }
     });
   });
 });

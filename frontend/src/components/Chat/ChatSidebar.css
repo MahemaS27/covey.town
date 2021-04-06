@@ -1,18 +1,37 @@
 .chat-sidebar {
-  height: 100%;
   width: 500px;
+  min-width: 500px;
+  max-width: 500px;
   background: white;
-  border: 1px solid #ddd;
-  position: fixed;
-  right: 0;
+  border-left: 1px solid #ddd;
+  right: 0px;
   top: 0;
+  transition: 0.5s all;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.chat-sidebar.collapsed {
+  max-width: 160px;
+  min-width: 0px;
+  position: fixed;
+  top: 10px;
+  right: 30px;
+  border: none;
+  background: none;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .chat-sidebar .sidebar-header {
   padding: 15px;
   background: #ddd;
+  overflow: hidden;
   border-bottom: 1px solid lightgray;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
+  width: 500px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .chat-sidebar .back-arrow {
@@ -20,4 +39,13 @@
   max-height: 10px;
   margin-top: -47px;
   padding-right: 5px;
+}
+
+.sidebar-content {
+  width: 500px;
+  min-width: 500px;
+}
+
+.collapse-button {
+  padding-bottom: 5px;
 }

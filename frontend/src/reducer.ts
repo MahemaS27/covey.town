@@ -19,7 +19,7 @@ export type CoveyAppUpdate =
         players: Player[];
         emitMovement: (location: UserLocation) => void;
         emitMessage: (message: Message) => void;
-        resetUnviewedMessages: (messageType: MessageType, directMessageId?: string) => void;
+        resetUnviewedMessages: (messageType: MessageType, directMessageId: string | null) => void;
       };
     }
   | { action: 'addPlayer'; player: Player }
@@ -28,7 +28,10 @@ export type CoveyAppUpdate =
   | { action: 'weMoved'; location: UserLocation }
   | { action: 'disconnect' }
   | { action: 'messageReceived'; message: Message }
-  | { action: 'resetUnviewedMessages'; messageType: MessageType; directMessageId?: string };
+  | {
+      action: 'resetUnviewedMessages';
+      data: { messageType: MessageType; directMessageId: string | null };
+    };
 
 export function defaultAppState(): CoveyAppState {
   return {
@@ -113,6 +116,7 @@ export function appStateReducer(state: CoveyAppState, update: CoveyAppUpdate): C
       nextState.emitMessage = update.data.emitMessage;
       nextState.socket = update.data.socket;
       nextState.players = update.data.players;
+      nextState.resetUnviewedMessages = update.data.resetUnviewedMessages;
       break;
     case 'addPlayer':
       nextState.players = nextState.players.concat([update.player]);
@@ -169,20 +173,21 @@ export function appStateReducer(state: CoveyAppState, update: CoveyAppUpdate): C
     case 'messageReceived':
       switch (update.message.type) {
         case MessageType.TownMessage:
-          nextState.townMessageChain.addMessage(update.message);
+          nextState.townMessageChain.addMessage(update.message, nextState.myPlayerID);
           break;
         case MessageType.ProximityMessage:
-          nextState.proximityMessageChain.addMessage(update.message);
+          nextState.proximityMessageChain.addMessage(update.message, nextState.myPlayerID);
           break;
         default:
           if (update.message.directMessageId) {
             directMessageChainToUpdate =
               nextState.directMessageChains[update.message.directMessageId];
             if (directMessageChainToUpdate) {
-              directMessageChainToUpdate.addMessage(update.message);
+              directMessageChainToUpdate.addMessage(update.message, nextState.myPlayerID);
             } else {
               nextState.directMessageChains[update.message.directMessageId] = new MessageChain(
                 update.message,
+                nextState.myPlayerID,
               );
             }
           }
@@ -190,12 +195,12 @@ export function appStateReducer(state: CoveyAppState, update: CoveyAppUpdate): C
       }
       break;
     case 'resetUnviewedMessages':
-      if (update.messageType === MessageType.TownMessage) {
+      if (update.data.messageType === MessageType.TownMessage) {
         nextState.townMessageChain.resetNumberUnviewed();
-      } else if (update.messageType === MessageType.ProximityMessage) {
+      } else if (update.data.messageType === MessageType.ProximityMessage) {
         nextState.proximityMessageChain.resetNumberUnviewed();
-      } else if (update.directMessageId) {
-        directMessageChainToUpdate = nextState.directMessageChains[update.directMessageId];
+      } else if (update.data.directMessageId) {
+        directMessageChainToUpdate = nextState.directMessageChains[update.data.directMessageId];
         if (directMessageChainToUpdate) directMessageChainToUpdate.resetNumberUnviewed();
       }
       break;

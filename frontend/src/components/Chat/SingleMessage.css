@@ -19,6 +19,7 @@
 .message-container .message-content {
   padding: 15px;
   border-radius: 15px;
+  width: 100%;
 }
 
 .message-container .message-content .message-details {
@@ -29,8 +30,18 @@
 
 .message-container .message-content .message-details .message-username {
   font-weight: bold;
+  width: 100%;
+  padding-right: 10px;
+  white-space: nowrap;
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
 }
 
 .message-container .message-content .message-details .message-timestamp {
   font-size: 0.8em;
+  display: flex;
+  justify-content: flex-end;
+  flex-shrink: 0;
 }

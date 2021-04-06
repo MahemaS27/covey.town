@@ -3,7 +3,8 @@ and 42 is the height of the tabs. These need to be subtracted from
 the height of the viewport */
 
 .scrollable-messages {
-  max-height: calc(100vh - 100px - 66px - 42px);
+  max-height: calc(100vh - 105px - 66px - 42px);
+  min-height: calc(100vh - 105px - 66px - 42px);
   overflow-y: auto;
   padding-bottom: 20px;
 }
