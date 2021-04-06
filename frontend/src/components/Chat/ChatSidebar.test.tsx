@@ -109,7 +109,7 @@ describe('ChatSidebar', () => {
   });
 
   describe('notifications', () => {
-    it('will not render when all messages are viwed', () => {
+    it('will not render when all messages are viewed', () => {
       const renderData = render(wrappedChatSidebar());
       const button = renderData.getByTestId('collapse-expand-button');
       fireEvent.click(button);
