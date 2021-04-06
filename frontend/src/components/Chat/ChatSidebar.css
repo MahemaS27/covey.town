@@ -49,3 +49,10 @@
 .collapse-button {
   padding-bottom: 5px;
 }
+
+.scrollable-select {
+  max-height: calc(100vh - 66px - 42px);
+  min-height: calc(100vh - 66px - 42px);
+  overflow-y: auto;
+  padding-bottom: 20px;
+}

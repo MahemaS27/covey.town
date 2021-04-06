@@ -145,11 +145,13 @@ export default function ChatSidebar(): JSX.Element {
           </TabList>
           <TabPanels>
             <TabPanel padding='0'>
-              <DirectMessageSelect
-                setIsViewingChatContainer={setIsViewingDirectChatContainer}
-                isViewingChatContainer={isViewingDirectChatContainer}
-                onDirectChatOpen={onDirectChatOpen}
-              />
+              <div className='scrollable-select'>
+                <DirectMessageSelect
+                  setIsViewingChatContainer={setIsViewingDirectChatContainer}
+                  isViewingChatContainer={isViewingDirectChatContainer}
+                  onDirectChatOpen={onDirectChatOpen}
+                />
+              </div>
             </TabPanel>
             <TabPanel padding='0'>
               <ChatContainer chainType={MessageType.TownMessage} directMessageID={null} />
