@@ -86,9 +86,7 @@ export default function DirectMessageSelect({
                     {renderNotification(participant)}
                   </Td>
                   <Td role='cell'>
-                    <Button onClick={() => handleChat(participant.userId, userName)}>
-                      Continue Chat
-                    </Button>
+                    <Button onClick={() => handleChat(participant.userId, userName)}>Chat</Button>
                   </Td>
                 </Tr>
               );
@@ -116,7 +114,7 @@ export default function DirectMessageSelect({
                     {player.userName} #{player.id.slice(-4)}
                   </Td>
                   <Td role='cell'>
-                    <Button onClick={() => handleChat(player.id, userName)}>Start Chat</Button>
+                    <Button onClick={() => handleChat(player.id, userName)}>Chat</Button>
                   </Td>
                 </Tr>
               );
