@@ -29,13 +29,14 @@ export default function DirectMessageSelect({
       chattedWithPlayers.push(otherPlayer.userId);
     }
   });
+  playersWithChats.sort((a, b) => a.userName.localeCompare(b.userName));
 
   // don't want to direct chat with self
   chattedWithPlayers.push(myPlayerID);
 
   const playersWithoutChats = players.filter(
     playerToCheck => !chattedWithPlayers.includes(playerToCheck.id),
-  );
+  ).sort((a, b) => a.userName.localeCompare(b.userName));
 
   const handleChat = async (otherPlayerID: string, userName: string) => {
     const directMessageId = [myPlayerID, otherPlayerID].sort().join(':');
