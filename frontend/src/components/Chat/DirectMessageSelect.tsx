@@ -16,20 +16,26 @@ export default function DirectMessageSelect({
 }: DirectMessageSelectProps): JSX.Element {
   const { myPlayerID, players, directMessageChains } = useCoveyAppState();
   const [chosenDirectID, setDirectID] = useState<string>('');
-  
-  const chattedWithPlayers: String[] = [];
+
+  const chattedWithPlayers: string[] = [];
   const playersWithChats: DirectMessageParticipant[] = [];
-  for (let key in directMessageChains) {
-    let value = directMessageChains[key];
+
+  Object.values(directMessageChains).forEach(value => {
     if (value.participants) {
-      const otherPlayer = value.participants.filter((participant) => participant.userId !== myPlayerID)[0];
+      const otherPlayer = value.participants.filter(
+        participant => participant.userId !== myPlayerID,
+      )[0];
       playersWithChats.push(otherPlayer);
       chattedWithPlayers.push(otherPlayer.userId);
     }
-  }
+  });
 
-  const playersWithoutChats = players.filter((playerToCheck) => !chattedWithPlayers.includes(playerToCheck.id));
+  // don't want to direct chat with self
+  chattedWithPlayers.push(myPlayerID);
 
+  const playersWithoutChats = players.filter(
+    playerToCheck => !chattedWithPlayers.includes(playerToCheck.id),
+  );
 
   const handleChat = async (otherPlayerID: string, userName: string) => {
     const directMessageId = [myPlayerID, otherPlayerID].sort().join(':');
@@ -71,22 +77,22 @@ export default function DirectMessageSelect({
             </Tr>
           </Thead>
           <Tbody>
-            {playersWithChats.map(participant => (
-              <Tr key={participant.userId}>
-                <Td role='cell'>
-                  {participant.userName}#{participant.userId.slice(-4)}
-                  {renderNotification(participant)}
-                </Td>
-                <Td role='cell'>
-                  <Button
-                    onClick={() =>
-                      handleChat(participant.userName, `${participant.userName}#${participant.userId.slice(-4)}`)
-                    }>
-                    Continue Chat
-                  </Button>
-                </Td>
-              </Tr>
-            ))}
+            {playersWithChats.map(participant => {
+              const userName = `${participant.userName}#${participant.userId.slice(-4)}`;
+              return (
+                <Tr key={participant.userId}>
+                  <Td role='cell'>
+                    {participant.userName}#{participant.userId.slice(-4)}
+                    {renderNotification(participant)}
+                  </Td>
+                  <Td role='cell'>
+                    <Button onClick={() => handleChat(participant.userId, userName)}>
+                      Continue Chat
+                    </Button>
+                  </Td>
+                </Tr>
+              );
+            })}
           </Tbody>
         </Table>
       </Box>
