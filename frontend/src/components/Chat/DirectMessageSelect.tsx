@@ -112,7 +112,7 @@ export default function DirectMessageSelect({
               return (
                 <Tr key={player.id}>
                   <Td role='cell'>
-                    {player.userName} #{player.id.slice(-4)}
+                    {player.userName}#{player.id.slice(-4)}
                   </Td>
                   <Td role='cell'>
                     <Button onClick={() => handleChat(player.id, userName)}>Chat</Button>
