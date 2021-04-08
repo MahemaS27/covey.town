@@ -40,7 +40,6 @@ export default function ChatContainer({
 
   const messageChain = getMessageChain();
   const messageChainNumberUnviewed = messageChain ? messageChain.numberUnviewed : 0;
-  const disabledMessage = messageChain?.isActive ? '' : 'You can no longer message with this player, as they have disconnected.';
 
   useEffect(() => {
     if (messageChainNumberUnviewed) {
@@ -67,6 +66,18 @@ export default function ChatContainer({
       </div>
     );
   }
+
+  const chatInput = <div className='chat-input'>
+    <ChatInput
+      messageType={chainType}
+      directMessageId={directMessageID}
+      isDisabled={!messageChain.isActive}
+    />
+  </div>
+
+  const disabledMessage = 'You can no longer message with this player, as they have disconnected.';
+
+
   return (
     <div className='chat-container'>
       <div id='scrollable-messages' className='scrollable-messages'>
@@ -74,13 +85,8 @@ export default function ChatContainer({
           <SingleMessage key={message.timestamp} message={message} myPlayerID={myPlayerID} />
         ))}
       </div>
-      <div>{disabledMessage}</div>
-      <div className='chat-input'>
-        <ChatInput
-          messageType={chainType}
-          directMessageId={directMessageID}
-          isDisabled={!messageChain.isActive}
-        />
+      <div className={`${messageChain.isActive ? 'active' : 'inactive'}`}>
+        {messageChain.isActive ? chatInput : disabledMessage}
       </div>
     </div>
   );

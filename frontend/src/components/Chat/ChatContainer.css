@@ -14,3 +14,13 @@ the height of the viewport */
   width: 100%;
   border-top: 1px solid #ddd;
 }
+
+.inactive {
+  font-weight: bold;
+  border-top: 1px solid lightblue;
+  height: 100px;
+  width: 100%;
+  font-size: 0.8em;
+  text-align: center;
+  padding: 20px;
+}
