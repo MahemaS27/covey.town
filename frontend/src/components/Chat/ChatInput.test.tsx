@@ -78,15 +78,6 @@ describe('ChatInput', () => {
     if (sendButton) expect(sendButton.disabled).toBeTruthy();
     if (textArea) expect(textArea.disabled).toBeFalsy();
   });
-  it('renders a disabled textarea and a disabled button if isDisabled prop is true', () => {
-    const renderData = render(wrappedChatInput(true));
-    const textArea = renderData.getByPlaceholderText('Send a message...').closest('textarea');
-    const sendButton = renderData.getByText('Send').closest('button');
-    expect(sendButton).toBeTruthy();
-    expect(textArea).toBeTruthy();
-    if (sendButton) expect(sendButton.disabled).toBeTruthy();
-    if (textArea) expect(textArea.disabled).toBeTruthy();
-  });
   it('enables send button when user begins to type', () => {
     const renderData = render(wrappedChatInput());
     fireEvent.change(renderData.getByPlaceholderText('Send a message...'), {
