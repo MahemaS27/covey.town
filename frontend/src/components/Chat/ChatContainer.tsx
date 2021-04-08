@@ -60,7 +60,6 @@ export default function ChatContainer({
           <ChatInput
             messageType={chainType}
             directMessageId={directMessageID}
-            isDisabled={undefined}
           />
         </div>
       </div>
@@ -71,7 +70,6 @@ export default function ChatContainer({
     <ChatInput
       messageType={chainType}
       directMessageId={directMessageID}
-      isDisabled={!messageChain.isActive}
     />
   </div>
 

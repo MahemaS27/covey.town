@@ -9,11 +9,10 @@ import './ChatInput.css';
 interface ChatInputProps {
   messageType: MessageType;
   directMessageId: string | null;
-  isDisabled: boolean | undefined;
 }
 
 // an input for sending messages from frontend to the socket
-function ChatInput({ messageType, directMessageId, isDisabled }: ChatInputProps): JSX.Element {
+function ChatInput({ messageType, directMessageId }: ChatInputProps): JSX.Element {
   const [messageContent, setMessageContent] = useState<string>('');
   const {
     myPlayerID,
@@ -129,7 +128,7 @@ function ChatInput({ messageType, directMessageId, isDisabled }: ChatInputProps)
             placeholder='Send a message...'
             borderRadius='0'
             className='text-area'
-            disabled={isDisabled}
+            disabled={false}
           />
         </div>
         <div className='button'>
@@ -137,7 +136,7 @@ function ChatInput({ messageType, directMessageId, isDisabled }: ChatInputProps)
             bg='lightblue'
             borderRadius='0'
             height='100px'
-            disabled={isDisabled || !canSendMessage}
+            disabled={!canSendMessage}
             type='submit'>
             Send
           </Button>
