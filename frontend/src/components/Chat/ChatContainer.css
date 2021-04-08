@@ -15,7 +15,7 @@ the height of the viewport */
   border-top: 1px solid #ddd;
 }
 
-.inactive {
+.chat-container .inactive {
   font-weight: bold;
   border-top: 1px solid lightblue;
   height: 100px;
