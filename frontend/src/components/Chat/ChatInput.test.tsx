@@ -57,7 +57,6 @@ function wrappedChatInput(isDisabled = false, directMessageChains = {}, players 
         <ChatInput
           messageType={MessageType.DirectMessage}
           directMessageId='123:321'
-          isDisabled={isDisabled}
         />
       </CoveyAppContext.Provider>
     </ChakraProvider>
