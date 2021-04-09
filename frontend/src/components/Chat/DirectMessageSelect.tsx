@@ -18,18 +18,19 @@ export default function DirectMessageSelect({
   const [chosenDirectID, setDirectID] = useState<string>('');
 
   const chattedWithPlayers: string[] = [];
-  const playersWithChats: DirectMessageParticipant[] = [];
+  const participantsWithChats: DirectMessageParticipant[] = [];
 
-  Object.values(directMessageChains).forEach(value => {
-    if (value.participants) {
-      const otherPlayer = value.participants.filter(
+  Object.values(directMessageChains).forEach(chain => {
+    // our MessageChain type only has participants when it contains DirectmEssage
+    if (chain.participants) {
+      const otherPlayer = chain.participants.filter(
         participant => participant.userId !== myPlayerID,
       )[0];
-      playersWithChats.push(otherPlayer);
+      participantsWithChats.push(otherPlayer);
       chattedWithPlayers.push(otherPlayer.userId);
     }
   });
-  playersWithChats.sort((a, b) => a.userName.localeCompare(b.userName));
+  participantsWithChats.sort((a, b) => a.userName.localeCompare(b.userName));
 
   // don't want to direct chat with self
   chattedWithPlayers.push(myPlayerID);
@@ -78,7 +79,7 @@ export default function DirectMessageSelect({
             </Tr>
           </Thead>
           <Tbody>
-            {playersWithChats.map(participant => {
+            {participantsWithChats.map(participant => {
               const userName = `${participant.userName}#${participant.userId.slice(-4)}`;
               return (
                 <Tr key={participant.userId}>
