@@ -1,7 +1,6 @@
 import { Box, Button, Heading, Table, Tag, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
-import React, { useState } from 'react';
-import { MessageType } from '../../classes/MessageChain';
-import Player from '../../classes/Player';
+import React, { useMemo, useState } from 'react';
+import { DirectMessageParticipant, MessageType } from '../../classes/MessageChain';
 import useCoveyAppState from '../../hooks/useCoveyAppState';
 import ChatContainer from './ChatContainer';
 
@@ -17,17 +16,34 @@ export default function DirectMessageSelect({
 }: DirectMessageSelectProps): JSX.Element {
   const { myPlayerID, players, directMessageChains } = useCoveyAppState();
   const [chosenDirectID, setDirectID] = useState<string>('');
-  const playersWithChats: Player[] = [];
-  const playersWithoutChats: Player[] = [];
+  const startedDirectMessageChains = Object.values(directMessageChains);
 
-  players.forEach(player => {
-    const directMessageId = [myPlayerID, player.id].sort().join(':');
-    if (directMessageChains[directMessageId]) {
-      playersWithChats.push(player);
-    } else if (player.id !== myPlayerID) {
-      playersWithoutChats.push(player);
-    }
-  });
+  const chattedWithPlayers = useMemo(() => {
+    const includeSelf: string[] = [myPlayerID]
+    return includeSelf;
+  }, [myPlayerID]);
+
+  const participantsWithChats = useMemo(() => {
+    const participants: DirectMessageParticipant[] = [];
+    startedDirectMessageChains.forEach(chain => {
+      if (chain.participants) {
+        const otherPlayer = chain.participants.filter(
+          participant => participant.userId !== myPlayerID,
+        )[0];
+        chattedWithPlayers.push(otherPlayer.userId);
+        participants.push(otherPlayer);
+      }
+    });
+    return participants.sort((a, b) => a.userName.localeCompare(b.userName));
+  }, [
+    startedDirectMessageChains,
+    chattedWithPlayers,
+    myPlayerID
+  ]);
+
+  const playersWithoutChats = players.filter(
+    playerToCheck => !chattedWithPlayers.includes(playerToCheck.id),
+  ).sort((a, b) => a.userName.localeCompare(b.userName));
 
   const handleChat = async (otherPlayerID: string, userName: string) => {
     const directMessageId = [myPlayerID, otherPlayerID].sort().join(':');
@@ -36,8 +52,8 @@ export default function DirectMessageSelect({
     onDirectChatOpen(userName);
   };
 
-  const renderNotification = (player: Player): JSX.Element | null => {
-    const directMessageId = [player.id, myPlayerID].sort().join(':');
+  const renderNotification = (participant: DirectMessageParticipant): JSX.Element | null => {
+    const directMessageId = [participant.userId, myPlayerID].sort().join(':');
     const messageChain = directMessageChains[directMessageId];
     if (!messageChain) {
       return null;
@@ -69,22 +85,20 @@ export default function DirectMessageSelect({
             </Tr>
           </Thead>
           <Tbody>
-            {playersWithChats.map(player => (
-              <Tr key={player.id}>
-                <Td role='cell'>
-                  {player.userName}#{player.id.slice(-4)}
-                  {renderNotification(player)}
-                </Td>
-                <Td role='cell'>
-                  <Button
-                    onClick={() =>
-                      handleChat(player.id, `${player.userName}#${player.id.slice(-4)}`)
-                    }>
-                    Continue Chat
-                  </Button>
-                </Td>
-              </Tr>
-            ))}
+            {participantsWithChats.map(participant => {
+              const userName = `${participant.userName}#${participant.userId.slice(-4)}`;
+              return (
+                <Tr key={participant.userId}>
+                  <Td role='cell'>
+                    {participant.userName}#{participant.userId.slice(-4)}
+                    {renderNotification(participant)}
+                  </Td>
+                  <Td role='cell'>
+                    <Button onClick={() => handleChat(participant.userId, userName)}>Chat</Button>
+                  </Td>
+                </Tr>
+              );
+            })}
           </Tbody>
         </Table>
       </Box>
@@ -105,10 +119,10 @@ export default function DirectMessageSelect({
               return (
                 <Tr key={player.id}>
                   <Td role='cell'>
-                    {player.userName} #{player.id.slice(-4)}
+                    {player.userName}#{player.id.slice(-4)}
                   </Td>
                   <Td role='cell'>
-                    <Button onClick={() => handleChat(player.id, userName)}>Start Chat</Button>
+                    <Button onClick={() => handleChat(player.id, userName)}>Chat</Button>
                   </Td>
                 </Tr>
               );

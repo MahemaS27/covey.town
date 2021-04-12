@@ -60,12 +60,22 @@ export default function ChatContainer({
           <ChatInput
             messageType={chainType}
             directMessageId={directMessageID}
-            isDisabled={undefined}
           />
         </div>
       </div>
     );
   }
+
+  const chatInput = <div className='chat-input'>
+    <ChatInput
+      messageType={chainType}
+      directMessageId={directMessageID}
+    />
+  </div>
+
+  const disabledMessage = 'You can no longer message with this player, as they have disconnected.';
+
+
   return (
     <div className='chat-container'>
       <div id='scrollable-messages' className='scrollable-messages'>
@@ -73,12 +83,8 @@ export default function ChatContainer({
           <SingleMessage key={message.timestamp} message={message} myPlayerID={myPlayerID} />
         ))}
       </div>
-      <div className='chat-input'>
-        <ChatInput
-          messageType={chainType}
-          directMessageId={directMessageID}
-          isDisabled={undefined}
-        />
+      <div className={`${messageChain.isActive ? 'active' : 'inactive'}`}>
+        {messageChain.isActive ? chatInput : disabledMessage}
       </div>
     </div>
   );
