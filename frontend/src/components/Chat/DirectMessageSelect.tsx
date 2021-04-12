@@ -1,5 +1,5 @@
 import { Box, Button, Heading, Table, Tag, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { DirectMessageParticipant, MessageType } from '../../classes/MessageChain';
 import useCoveyAppState from '../../hooks/useCoveyAppState';
 import ChatContainer from './ChatContainer';
@@ -16,24 +16,30 @@ export default function DirectMessageSelect({
 }: DirectMessageSelectProps): JSX.Element {
   const { myPlayerID, players, directMessageChains } = useCoveyAppState();
   const [chosenDirectID, setDirectID] = useState<string>('');
+  const startedDirectMessageChains = Object.values(directMessageChains);
 
-  const chattedWithPlayers: string[] = [];
-  const participantsWithChats: DirectMessageParticipant[] = [];
+  const chattedWithPlayers = useMemo(() => {
+    const includeSelf: string[] = [myPlayerID]
+    return includeSelf;
+  }, [myPlayerID]);
 
-  Object.values(directMessageChains).forEach(chain => {
-    // our MessageChain type only has participants when it contains DirectmEssage
-    if (chain.participants) {
-      const otherPlayer = chain.participants.filter(
-        participant => participant.userId !== myPlayerID,
-      )[0];
-      participantsWithChats.push(otherPlayer);
-      chattedWithPlayers.push(otherPlayer.userId);
-    }
-  });
-  participantsWithChats.sort((a, b) => a.userName.localeCompare(b.userName));
-
-  // don't want to direct chat with self
-  chattedWithPlayers.push(myPlayerID);
+  const participantsWithChats = useMemo(() => {
+    const participants: DirectMessageParticipant[] = [];
+    startedDirectMessageChains.forEach(chain => {
+      if (chain.participants) {
+        const otherPlayer = chain.participants.filter(
+          participant => participant.userId !== myPlayerID,
+        )[0];
+        chattedWithPlayers.push(otherPlayer.userId);
+        participants.push(otherPlayer);
+      }
+    });
+    return participants.sort((a, b) => a.userName.localeCompare(b.userName));
+  }, [
+    startedDirectMessageChains,
+    chattedWithPlayers,
+    myPlayerID
+  ]);
 
   const playersWithoutChats = players.filter(
     playerToCheck => !chattedWithPlayers.includes(playerToCheck.id),
