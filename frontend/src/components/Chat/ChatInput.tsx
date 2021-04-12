@@ -128,7 +128,6 @@ function ChatInput({ messageType, directMessageId }: ChatInputProps): JSX.Elemen
             placeholder='Send a message...'
             borderRadius='0'
             className='text-area'
-            disabled={false}
           />
         </div>
         <div className='button'>
