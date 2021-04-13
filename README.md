@@ -12,6 +12,9 @@ The frontend implements video chat using the [Twilio Programmable Video](https:/
 
 A backend service (in the `services/roomService` directory) implements the application logic: tracking which "towns" are available to be joined, and the state of each of those towns.
 
+## Changes for this fork
+We have not made any changes in this fork that require different setup from the current master version of this project. As such, the directions below are identical.
+
 ## Running this app locally
 
 Running the application locally entails running both the backend service and a frontend.
@@ -45,3 +48,6 @@ Create a `.env` file in the `frontend` directory, with the line: `REACT_APP_TOWN
 
 In the `frontend` directory, run `npm start` (again, you'll need to run `npm install` the very first time). After several moments (or minutes, depending on the speed of your machine), a browser will open with the frontend running locally.
 The frontend will automatically re-compile and reload in your browser if you change any files in the `frontend/src` directory.
+
+### Accessing the live deployment
+To access the current version of master for this fork, visit https://zealous-benz-d36e64.netlify.app/
