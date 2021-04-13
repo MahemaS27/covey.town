@@ -1,1 +1,0 @@
-# Covey.town Chat Features
