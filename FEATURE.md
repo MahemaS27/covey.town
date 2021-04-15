@@ -1,7 +1,5 @@
 # FEATURE.MD
 
-![Screen Shot 2021-04-15 at 12 00 56 PM](https://user-images.githubusercontent.com/32179812/114901291-a87f0b00-9de2-11eb-9a86-32cbf74b35f1.png)
-
 ## User Story #1 - Proximity Chat
 
 As a player who cannot/does not want to rely on visual/auditory content, I need to be able to textually chat with nearby players (nearby meaning players nearby in the virtual room) so that I am still able to communicate and interact with those around me. To do this, I would:
@@ -47,3 +45,8 @@ As a player who wishes to build individual friendships, I want to be able to dir
 
 ![Screen Shot 2021-04-15 at 12 00 38 PM](https://user-images.githubusercontent.com/32179812/114901521-e11ee480-9de2-11eb-9965-82b6805776ad.png)
 
+## Notifications
+
+Users can see that they have unread messages for each of the types of messages. Once the tab with unread notifications is clicked the notifications dissapear. 
+
+![Screen Shot 2021-04-15 at 12 00 56 PM](https://user-images.githubusercontent.com/32179812/114901291-a87f0b00-9de2-11eb-9a86-32cbf74b35f1.png)
