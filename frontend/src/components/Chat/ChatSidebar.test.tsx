@@ -1,4 +1,3 @@
-/* eslint-disable no-await-in-loop,@typescript-eslint/no-loop-func,no-restricted-syntax */
 import { ChakraProvider } from '@chakra-ui/react';
 import { fireEvent, render } from '@testing-library/react';
 import React from 'react';
