@@ -31,7 +31,7 @@ const samplePlayers: Array<Player> = [
   new Player('321', 'test to', sampleLocation),
 ];
 
-function wrappedChatInput(isDisabled = false, directMessageChains = {}, players = samplePlayers) {
+function wrappedChatInput(directMessageChains = {}, players = samplePlayers) {
   return (
     <ChakraProvider>
       <CoveyAppContext.Provider
